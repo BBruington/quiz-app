@@ -7,8 +7,48 @@
     },
     {
       "number": 2,
-      "question": "question 2",
-      "answer": "answer 2"
+      "question": "What are the major features of React?",
+      "answer": "The major features of React are: Uses JSX syntax, a syntax extension of JS that allows developers to write HTML in their JS code. It uses VirtualDOM instead of RealDOM considering that RealDOM manipulations are expensive. Supports server-side rendering. Follows Unidirectional data flow or data binding. Uses reusable/composable UI components to develop the view."
+    },
+    {
+      "number": 3,
+      "question": "What is JSX?",
+      "answer": "JSX is a XML-like syntax extension to ECMAScript (the acronym stands for JavaScript XML). Basically it just provides syntactic sugar for the React.createElement() function, giving us expressiveness of JavaScript along with HTML like template syntax. In the example below text inside <h1> tag is returned as JavaScript function to the render function."
+    },
+    {
+      "number": 4,
+      "question": "What is the difference between Element and Component?",
+      "answer": "An Element is a plain object describing what you want to appear on the screen in terms of the DOM nodes or other components. Elements can contain other Elements in their props. Creating a React element is cheap. Once an element is created, it is never mutated. Whereas a component can be declared in several different ways. It can be a class with a render() method or it can be defined as a function. In either case, it takes props as an input, and returns a JSX tree as the output."
+    },
+    {
+      "number": 5,
+      "question": "What is state in React?",
+      "answer": "State of a component is an object that holds some information that may change over the lifetime of the component. We should always try to make our state as simple as possible and minimize the number of stateful components. State is similar to props, but it is private and fully controlled by the component ,i.e., it is not accessible to any other component till the owner component decides to pass it."
+    },
+    {
+      "number": 6,
+      "question": "What are props in React?",
+      "answer": "Props are inputs to components. They are single values or objects containing a set of values that are passed to components on creation using a naming convention similar to HTML-tag attributes. They are data passed down from a parent component to a child component. The primary purpose of props in React is to provide following component functionality: Pass custom data to your component. Trigger state changes. Use via this.props.reactProp inside component's render() method."
+    },
+    {
+      "number": 7,
+      "question": "What is the difference between state and props?",
+      "answer": "Both props and state are plain JavaScript objects. While both of them hold information that influences the output of render, they are different in their functionality with respect to component. Props get passed to the component similar to function parameters whereas state is managed within the component similar to variables declared within a function."
+    },
+    {
+      "number": 8,
+      "question": "Why should we not update the state directly?",
+      "answer": "If you try to update the state directly then it won't re-render the component. Instead use setState() method. It schedules an update to a component's state object. When state changes, the component responds by re-rendering."
+    },
+    {
+      "number": 9,
+      "question": "What are inline conditional expressions?",
+      "answer": "You can use either if statements or ternary expressions which are available from JS to conditionally render expressions. Apart from these approaches, you can also embed any expressions in JSX by wrapping them in curly braces and then followed by JS logical operator &&."
+    },
+    {
+      "number": 10,
+      "question": "What is 'key' prop and what is the benefit of using it in arrays of elements?",
+      "answer": "A key is a special string attribute you should include when creating arrays of elements. Key prop helps React identify which items have changed, are added, or are removed. Keys should be unique among its siblings. Most often we use ID from our data as key. Note: Using indexes for keys is not recommended if the order of items may change. This can negatively impact performance and may cause issues with component state. If you extract list item as separate component then apply keys on list component instead of li tag. There will be a warning message in the console if the key prop is not present on list items."
     }
   ]  
 }
