@@ -2,6 +2,8 @@ import QuizCard from "@/components/QuizCard";
 
 export default function Home() {
   return (
-    <QuizCard />
+    <div className="flex items-center justify-center">
+      <QuizCard />
+    </div>
   )
 }
