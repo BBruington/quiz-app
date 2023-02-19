@@ -49,6 +49,31 @@
       "number": 10,
       "question": "What is 'key' prop and what is the benefit of using it in arrays of elements?",
       "answer": "A key is a special string attribute you should include when creating arrays of elements. Key prop helps React identify which items have changed, are added, or are removed. Keys should be unique among its siblings. Most often we use ID from our data as key. Note: Using indexes for keys is not recommended if the order of items may change. This can negatively impact performance and may cause issues with component state. If you extract list item as separate component then apply keys on list component instead of li tag. There will be a warning message in the console if the key prop is not present on list items."
+    },
+    {
+      "number": 11,
+      "question": "What are some types of side effects in React components?",
+      "answer": "Effects without Cleanup: This side effect will be used in useEffect which does not restrict the browser from screen update. It also improves the responsiveness of an application. A few common examples are network requests, Logging, manual DOM mutations, etc. Effects with Cleanup: Some of the Hook effects will require the cleanup after updating of DOM is done. For example, if you want to set up an external data source subscription, it requires cleaning up the memory else there might be a problem of memory leak. It is a known fact that React will carry out the cleanup of memory when the unmounting of components happens. But the effects will run for each render() method rather than for any specific method. Thus we can say that, before execution of the effects succeeding time the React will also cleanup effects from the preceding render."
+    },
+    {
+      "number": 12,
+      "question": "What is prop drilling in React?",
+      "answer": "Sometimes while developing React applications, there is a need to pass data from a component that is higher in the hierarchy to a component that is deeply nested. To pass data between such components, we pass props from a source component and keep passing the prop to the next component in the hierarchy till we reach the deeply nested component. The disadvantage of using prop drilling is that the components that should otherwise be not aware of the data have access to the data."
+    },
+    {
+      "number": 13,
+      "question": "What are React Hooks?",
+      "answer": "React Hooks are the built-in functions that permit developers for using the state and lifecycle methods within React components. These are newly added features made available in React 16.8 version. Each lifecycle of a component is having 3 phases which include mount, unmount, and update. Along with that, components have properties and states. Hooks will allow using these methods by developers for improving the reuse of code with higher flexibility navigating the component tree. Using Hook, all features of React can be used without writing class components. For example, before React version 16.8, it required a class component for managing the state of a component. But now using the useState hook, we can keep the state in a functional component."
+    },
+    {
+      "number": 14,
+      "question": "What are the rules that must be followed while using React Hooks?",
+      "answer": "There are 2 rules which must be followed while you code with Hooks: React Hooks must be called only at the top level. It is not allowed to call them inside the nested functions, loops, or conditions AND It is allowed to call the Hooks only from the React Function Components."
+    },
+    {
+      "number": 15,
+      "question": "What is the use of useEffect React Hooks?",
+      "answer": "The useEffect React Hook is used for performing the side effects in functional components. With the help of useEffect, you will inform React that your component requires something to be done after rendering the component or after a state change. The function you have passed(can be referred to as “effect”) will be remembered by React and call afterwards the performance of DOM updates is over. Using this, we can perform various calculations such as data fetching, setting up document title, manipulating DOM directly, etc, that don’t target the output value. The useEffect hook will run by default after the first render and also after each update of the component. React will guarantee that the DOM will be updated by the time when the effect has run by it. The useEffect React Hook will accept 2 arguments: useEffect(callback,[dependencies]);"
     }
   ]  
 }

@@ -1,10 +1,9 @@
-import QuizCard from "@/components/QuizCard";
-import questions from "@/topics/reactInterview.json"
+import QuizCardHome from "@/components/QuizCardsHome";
 
 export default function Home() {
   return (
     <div className="flex items-center justify-center">
-      <QuizCard topic={questions}/>
+      <QuizCardHome />
     </div>
   )
 }
