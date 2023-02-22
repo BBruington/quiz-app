@@ -1,16 +1,11 @@
-import { useRouter } from "next/router"
+import Link from "next/link";
 
 export default function Nav() {
 
-  const router = useRouter();
-
-  const toHomeHandler = () => {
-    router.push('/')
-  }
-
   return (
     <div className="flex">
-      <div onClick={toHomeHandler} className="pl-5 pt-3 text-lg font-bold cursor-pointer">Home</div>
+      <Link href="/" className="pl-5 pt-3 text-lg font-bold hover:underline cursor-pointer">Home</Link>
+      <Link href="/Questions" className="pl-5 pt-3 text-lg hover:underline  font-bold cursor-pointer">Note Card Topics</Link>
     </div>
   )
 }
