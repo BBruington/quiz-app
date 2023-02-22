@@ -49,9 +49,9 @@ export default function QuizCard({topic}) {
             </div>
             <div className="flex justify-center pt-20">
               { showAnswer ? 
-                <button onClick={showAnswerHandler} className="py-3 px-5 border-solid border-2 hover:bg-sky-500 bg-sky-300 border-sky-500 rounded">Show Question</button>
+                <button onClick={showAnswerHandler} className="py-3 px-5 border-solid border-2 hover:bg-sky-400 active:bg-sky-500 bg-sky-300 border-sky-500 rounded">Show Question</button>
                 :
-                <button onClick={showAnswerHandler} className="py-3 px-5 border-solid border-2 hover:bg-sky-500 bg-sky-300 border-sky-500 rounded">Show Answer</button>
+                <button onClick={showAnswerHandler} className="py-3 px-5 border-solid border-2 hover:bg-sky-400 active:bg-sky-500 bg-sky-300 border-sky-500 rounded">Show Answer</button>
               }
 
               <button onClick={nextQuestionHandler} className="ml-10 py-3 px-5 border-solid border-2 hover:bg-sky-500 bg-sky-300 border-sky-500 rounded">Next Question</button>
@@ -62,7 +62,7 @@ export default function QuizCard({topic}) {
         <div className="flex justify-center mt-5">
           {topic.questions && topic.questions.map( (top) => (
             <div key={top.number} className="flex">
-              <span onClick={() => specificQuestionHandler(top.number)} className="ml-3 text-sm underline cursor-pointer">{top.number} </span>
+              <span onClick={() => specificQuestionHandler(top.number)} className="mx-2 text-sm hover:underline cursor-pointer">{top.number} </span>
             </div>
           ))}
         </div>
