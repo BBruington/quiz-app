@@ -11,10 +11,10 @@ export default function QuizCard({topic}) {
     const newFilteredQuestions = topic.questions.filter((question) => {
       return question.number === questionNum
     });
-    if(newFilteredQuestions != 0){
+    if(newFilteredQuestions !== 0){
       setCurrentquestion(newFilteredQuestions);
     } else {
-      setQuestionNum(1)
+      setQuestionNum(1);
     }
   }, [questionNum]);
 
@@ -24,12 +24,12 @@ export default function QuizCard({topic}) {
 
   const specificQuestionHandler = (num) => {
     setShowAnswer(false);
-    setQuestionNum(num)
+    setQuestionNum(num);
   }
 
   const nextQuestionHandler = () => {
     setShowAnswer(false);
-    setQuestionNum(questionNum + 1)
+    setQuestionNum(questionNum + 1);
   }
   
   return (
