@@ -1,6 +1,18 @@
 import { useState } from "react";
 import ReactMarkdown from "react-markdown"
+import { collection, addDoc } from "firebase/firestore"; 
+import { db } from "@/utils/firebase";
 
+try {
+  const docRef = await addDoc(collection(db, "users"), {
+    first: "Ada",
+    last: "Lovelace",
+    born: 1815
+  });
+  console.log("Document written with ID: ", docRef.id);
+} catch (e) {
+  console.error("Error adding document: ", e);
+}
 
 export default function CardBuilder() {
 
@@ -10,8 +22,11 @@ export default function CardBuilder() {
   });
   const [cardSet, setCardSet] = useState([]);
 
-  const addNote = () => {
+  const addNotesToDb = async () => {
+    const docRef = await addDoc(collection(db, "topics"), )
+  }
 
+  const addNote = () => {
     cardSet.push(currentCard);
     setCurrentCard({
       question: null,
