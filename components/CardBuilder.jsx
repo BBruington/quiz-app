@@ -16,6 +16,7 @@ try {
 
 export default function CardBuilder() {
 
+  const [topic, setTopic] = useState('test topic')
   const [currentCard, setCurrentCard] = useState({
     question: null,
     answer: null,
@@ -23,7 +24,7 @@ export default function CardBuilder() {
   const [cardSet, setCardSet] = useState([]);
 
   const addNotesToDb = async () => {
-    const docRef = await addDoc(collection(db, "topics"), )
+    const docRef = await addDoc(collection(db, "topics", topic), )
   }
 
   const addNote = () => {
@@ -50,7 +51,7 @@ export default function CardBuilder() {
     <div className="flex w-full">
 
       {/* Note Card Builder */}
-
+      <button onClick={addNotesToDb}>Submit Questions</button>
       <main className="flex flex-col items-center w-full">
         <div className="flex flex-col mt-10 w-4/6 items-center">
           <span className="text-sm my-2">Insert your question:</span>
