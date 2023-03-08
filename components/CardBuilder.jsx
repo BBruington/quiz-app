@@ -16,15 +16,30 @@ export default function CardBuilder() {
 
   useEffect(()=> {
     const getTopics = async () => {
+      if (!selectTopic) {
         await getDocs(collection(db, "topics")).then((querySnapshot) => {
         const newData = querySnapshot.docs.map((doc) => ({...doc.data(), id:doc.id }));
           setTopic(newData);                
           console.log("topic", topic);
-      }) 
+        }) 
+      }
+      if (selectTopic) {
+        await getDocs(collection(db,"topics", topic, "notecards")).then((querySnapshot) => {  
+          const newData = querySnapshot.docs.map((doc) => ({...doc.data(), id:doc.id }));
+            if(newData) {
+              setCardSet(newData);                
+              console.log("card set: ", cardSet);
+            }
+          }) 
+      }
     }
     getTopics()
-  }, [])
+  }, [selectTopic])
 
+  const selectTopicHandler = (top) => {
+    setTopic(top.id);
+    setSelectTopic(true);
+  }
 
   const addNote = async () => {
     await addDoc(collection(db, "topics", topic, "notecards"), {
@@ -61,19 +76,22 @@ export default function CardBuilder() {
   return (
     <div className="flex flex-col w-1/2 md:flex-row md:w-full">
 
-      {!selectTopic && (<div>
-        <span>Please select a topic or create a new one</span>
+      {!selectTopic && (
         <div>
-          <input type="text" placeholder="create a new topic"></input>
-        </div>
-        {topic && topic.map((t) => (
-
-          <div key={t.id}>
-            <button>{t.id}</button> 
+          <span>Please select a topic or create a new one</span>
+          <div>
+            <input type="text" placeholder="create a new topic"></input>
           </div>
-        ))}
-      </div>)}
+          {topic && topic.map((t) => (
+            <div key={t.id}>
+              <button onClick={() => selectTopicHandler(t)}>{t.id}</button> 
+            </div>
+          ))}
+        </div>
+      )}
+
       {selectTopic && (<>
+
         {/* Note Card Builder */}
         <main className="flex flex-col items-center w-full">
           <div className="flex flex-col mt-10 w-full md:w-4/6 items-center">
@@ -91,6 +109,7 @@ export default function CardBuilder() {
             </textarea>
           </div>
         </main>
+
         {/* display note */}
         <div className="flex flex-col mt-10 md:mr-10 md:w-2/6">
           <button className="mb-5 bg-black text-white py-3 px-5 rounded-md hover:bg-gray-700 whitespace-nowrap w-auto"
@@ -100,13 +119,14 @@ export default function CardBuilder() {
           <span>{currentCard.question}</span>
           <span>{currentCard.answer}</span>
           <div className="flex items-center justify-center">
-            { cardSet.length > 0  && cardSet.map((card, ind) => (
+            { cardSet.length > 0  && cardSet.map((card, index) => (
               <div className="flex items-center" key={card.id}>
-                <button className="flex mr-2 text-center">{ind + 1}</button>
+                <button className="flex mr-2 text-center">{index + 1}</button>
               </div>
             ))}
           </div>
         </div>
+
       </>)}
     </div>
   )
