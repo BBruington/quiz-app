@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import uuid from "react-uuid"
-import { collection, addDoc, getDocs } from "firebase/firestore"; 
+import { collection, addDoc, getDocs, setDoc, doc } from "firebase/firestore"; 
 import { db } from "@/utils/firebase";
 
 export default function CardBuilder() {
 
-  const [topic, setTopic] = useState([]);
+  const [topic, setTopic] = useState("");
+  const [topics, setTopics] = useState([]);
   const [selectTopic, setSelectTopic] = useState(false);
   const [currentCard, setCurrentCard] = useState({
     question: null,
@@ -19,30 +20,44 @@ export default function CardBuilder() {
       if (!selectTopic) {
         await getDocs(collection(db, "topics")).then((querySnapshot) => {
         const newData = querySnapshot.docs.map((doc) => ({...doc.data(), id:doc.id }));
-          setTopic(newData);                
-          console.log("topic", topic);
+          setTopics(newData);                
         }) 
       }
       if (selectTopic) {
-        await getDocs(collection(db,"topics", topic, "notecards")).then((querySnapshot) => {  
-          const newData = querySnapshot.docs.map((doc) => ({...doc.data(), id:doc.id }));
+        try {
+          await getDocs(collection(db,"topics", topic, "notecards")).then((querySnapshot) => {  
+            const newData = querySnapshot.docs.map((doc) => ({...doc.data(), id:doc.id }));
             if(newData) {
-              setCardSet(newData);                
-              console.log("card set: ", cardSet);
+              setCardSet(newData); 
             }
           }) 
+        } catch (error) {console.error(error)} 
       }
     }
     getTopics()
   }, [selectTopic])
 
-  const selectTopicHandler = (top) => {
-    setTopic(top.id);
+  const selectTopicListHandler = (top) => {
+    const newTopic = String(top.id);
+    setTopic(newTopic);
     setSelectTopic(true);
   }
 
+  const selectTopicButtonHandler = async () => {
+    await setDoc(doc(db, "topics", topic,), {
+      id: uuid()
+    })
+    setSelectTopic(true);
+  }
+
+  const createTopic = (event) => {
+    const value = event.target.value;
+    setTopic(value);
+  }
+
   const addNote = async () => {
-    await addDoc(collection(db, "topics", topic, "notecards"), {
+    console.log("attempting to add note")
+    const data = await addDoc(collection(db, "topics", topic, "notecards"), {
       question: currentCard.question,
       answer: currentCard.answer,
       id: uuid(),
@@ -51,6 +66,8 @@ export default function CardBuilder() {
         milliseconds: Date.now()
       }
     })
+
+    console.log("data?: ", data)
     cardSet.push(currentCard)
     setCurrentCard({
       question: null,
@@ -60,6 +77,7 @@ export default function CardBuilder() {
   }
 
   const editQuestion = (event) => {
+    console.log("topic: ", topic)
     setCurrentCard({
       question: event.target.value,
       answer: currentCard.answer,  
@@ -79,19 +97,20 @@ export default function CardBuilder() {
       {!selectTopic && (
         <div>
           <span>Please select a topic or create a new one</span>
-          <div>
-            <input type="text" placeholder="create a new topic"></input>
+          <div className="flex">
+            <input onChange={createTopic} type="text" placeholder="create a new topic"></input>
+            <button onClick={selectTopicButtonHandler}>Create Topic</button>
           </div>
-          {topic && topic.map((t) => (
+          {topics && topics.map((t) => (
             <div key={t.id}>
-              <button onClick={() => selectTopicHandler(t)}>{t.id}</button> 
+              <button onClick={() => selectTopicListHandler(t)}>{t.id}</button> 
             </div>
           ))}
         </div>
       )}
 
-      {selectTopic && (<>
-
+      {selectTopic && (
+      <>
         {/* Note Card Builder */}
         <main className="flex flex-col items-center w-full">
           <div className="flex flex-col mt-10 w-full md:w-4/6 items-center">
@@ -118,6 +137,7 @@ export default function CardBuilder() {
           <span className="mb-5 text-center">Here are your note cards</span>
           <span>{currentCard.question}</span>
           <span>{currentCard.answer}</span>
+          {/* <span>Topic: {topic && topic}</span> */}
           <div className="flex items-center justify-center">
             { cardSet.length > 0  && cardSet.map((card, index) => (
               <div className="flex items-center" key={card.id}>
@@ -126,8 +146,8 @@ export default function CardBuilder() {
             ))}
           </div>
         </div>
-
-      </>)}
+      </>
+      )}
     </div>
   )
 }
