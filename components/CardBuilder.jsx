@@ -9,8 +9,8 @@ export default function CardBuilder() {
   const [topics, setTopics] = useState([]);
   const [selectTopic, setSelectTopic] = useState(false);
   const [currentCard, setCurrentCard] = useState({
-    question: null,
-    answer: null,
+    question: "",
+    answer: "",
     id: null,
   });
   const [cardSet, setCardSet] = useState([]);
@@ -55,29 +55,29 @@ export default function CardBuilder() {
     setTopic(value);
   }
 
-  const addNote = async () => {
-    console.log("attempting to add note")
-    const data = await addDoc(collection(db, "topics", topic, "notecards"), {
-      question: currentCard.question,
-      answer: currentCard.answer,
-      id: uuid(),
-      lastModified:{
-        seconds: Date.now()/1000,
-        milliseconds: Date.now()
-      }
-    })
-
-    console.log("data?: ", data)
-    cardSet.push(currentCard)
-    setCurrentCard({
-      question: null,
-      answer: null,
-      id: null
-    })
+  const addNote = async (e) => {
+    e.preventDefault();
+    if(currentCard.answer.length > 0 && currentCard.question.length > 0) {
+      const data = await addDoc(collection(db, "topics", topic, "notecards"), {
+        question: currentCard.question,
+        answer: currentCard.answer,
+        id: uuid(),
+        lastModified:{
+          seconds: Date.now()/1000,
+          milliseconds: Date.now()
+        }
+      })
+      
+      cardSet.push(currentCard)
+      setCurrentCard({
+        question: "",
+        answer: "",
+        id: null
+      })
+    } else { alert("Please add a question and answer to the notecard")}
   }
 
   const editQuestion = (event) => {
-    console.log("topic: ", topic)
     setCurrentCard({
       question: event.target.value,
       answer: currentCard.answer,  
@@ -92,15 +92,15 @@ export default function CardBuilder() {
   })}
 
   return (
-    <div className="flex flex-col w-1/2 md:flex-row md:w-full">
+    <div className="flex flex-col w-full md:flex-row items-center">
 
       {!selectTopic && (
         <div>
           <span>Please select a topic or create a new one</span>
-          <div className="flex">
+          <form className="flex">
             <input onChange={createTopic} type="text" placeholder="create a new topic"></input>
-            <button onClick={selectTopicButtonHandler}>Create Topic</button>
-          </div>
+            <button onSubmit={selectTopicButtonHandler}>Create Topic</button>
+          </form>
           {topics && topics.map((t) => (
             <div key={t.id}>
               <button onClick={() => selectTopicListHandler(t)}>{t.id}</button> 
@@ -111,41 +111,48 @@ export default function CardBuilder() {
 
       {selectTopic && (
       <>
-        {/* Note Card Builder */}
-        <main className="flex flex-col items-center w-full">
-          <div className="flex flex-col mt-10 w-full md:w-4/6 items-center">
-            <span className="text-sm mb-5 bg-black text-white py-2 w-full text-center rounded-sm">Insert your question:</span>
-            <textarea id="question"
-              onChange={editQuestion}
-              className="flex mb-4 p-2 w-full h-30vh border border-black" type="text">
-            </textarea>
-          </div>
-          <div className="flex flex-col mt-10 w-full md:w-4/6 items-center">
-            <span className="text-sm my-5 bg-black text-white py-2 w-full text-center rounded-sm">Insert your answer:</span>
-            <textarea 
-              onChange={editAnswer}
-              className="flex mb-4 p-2 w-full h-80 border border-black" type="text">
-            </textarea>
-          </div>
-        </main>
+        <form onSubmit={addNote} className="flex flex-col items-center w-1/2 md:flex-row md:w-full">
+          {/* Note Card Builder */}
+          <main className="flex flex-col items-center w-full">
+            <div className="flex flex-col mt-10 w-full md:w-4/6 items-center">
+              <span className="text-sm mb-5 bg-black text-white py-2 w-full text-center rounded-sm">Insert your question:</span>
+              <textarea 
+                value={currentCard.question}
+                id="question"
+                onChange={editQuestion}
+                className="flex mb-4 p-2 w-full h-30vh border border-black" type="text">
+              </textarea>
+            </div>
+            <div className="flex flex-col mt-5 md:mt-10 w-full md:w-4/6 items-center">
+              <span className="text-sm my-5 bg-black text-white py-2 w-full text-center rounded-sm">Insert your answer:</span>
+              <textarea 
+                value={currentCard.answer}
+                onChange={editAnswer}
+                className="flex mb-4 p-2 w-full h-80 border border-black" type="text">
+              </textarea>
+            </div>
+          </main>
 
-        {/* display note */}
-        <div className="flex flex-col mt-10 md:mr-10 md:w-2/6">
-          <button className="mb-5 bg-black text-white py-3 px-5 rounded-md hover:bg-gray-700 whitespace-nowrap w-auto"
-            onClick={addNote}>Add your notecard
-          </button>
-          <span className="mb-5 text-center">Here are your note cards</span>
-          <span>{currentCard.question}</span>
-          <span>{currentCard.answer}</span>
-          {/* <span>Topic: {topic && topic}</span> */}
-          <div className="flex items-center justify-center">
-            { cardSet.length > 0  && cardSet.map((card, index) => (
-              <div className="flex items-center" key={card.id}>
-                <button className="flex mr-2 text-center">{index + 1}</button>
-              </div>
-            ))}
+          {/* display note */}
+          <div className="flex flex-col mt-10 md:mr-10 md:w-2/6">
+            <button 
+              type="submit"
+              className="mb-5 bg-black text-white py-3 px-5 rounded-md hover:bg-gray-700 whitespace-nowrap w-auto"
+              onClick={addNote}>Add your notecard
+            </button>
+            <span className="mb-5 text-center">Here are your note cards</span>
+            <span className="line-clamp-3">{currentCard.question}</span>
+            <span className="line-clamp-3 mb-10">{currentCard.answer}</span>
+            {/* <span>Topic: {topic && topic}</span> */}
+            <div className="flex items-center justify-center">
+              { cardSet.length > 0  && cardSet.map((card, index) => (
+                <div className="flex items-center" key={card.id}>
+                  <button className="flex mr-2 text-center">{index + 1}</button>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        </form>
       </>
       )}
     </div>

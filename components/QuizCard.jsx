@@ -5,16 +5,17 @@ export default function QuizCard({topic}) {
 
   const [ currentQuestion, setCurrentquestion ] = useState(null)
   const [ showAnswer, setShowAnswer ] = useState(false);
-  const [ questionNum, setQuestionNum ] = useState(1);
+  const [ questionNum, setQuestionNum ] = useState(0);
 
   useEffect(() => {
-    const newFilteredQuestions = topic.questions.filter((question) => {
-      return question.number === questionNum
+    const newFilteredQuestions = topic.filter((question, index) => {
+      return index === questionNum
     });
+    console.log("newFilteredQuestion", newFilteredQuestions)
     if(newFilteredQuestions !== 0){
-      setCurrentquestion(newFilteredQuestions);
+      setCurrentquestion(newFilteredQuestions); 
     } else {
-      setQuestionNum(1);
+      setQuestionNum(0);
     }
   }, [questionNum]);
 
@@ -60,9 +61,9 @@ export default function QuizCard({topic}) {
         ))}
         <div className="flex justify-center mt-10 text-lg">Select a specific question:</div>
         <div className="flex justify-center mt-5">
-          {topic.questions && topic.questions.map( (top) => (
-            <div key={top.number} className="flex">
-              <span onClick={() => specificQuestionHandler(top.number)} className="mx-2 text-sm hover:underline cursor-pointer">{top.number} </span>
+          {topic && topic.map( (top, index) => (
+            <div key={index} className="flex">
+              <span onClick={() => specificQuestionHandler(index)} className="mx-2 text-sm hover:underline cursor-pointer">{index + 1} </span>
             </div>
           ))}
         </div>
