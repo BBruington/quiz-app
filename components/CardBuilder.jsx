@@ -19,14 +19,17 @@ export default function CardBuilder() {
     const getTopics = async () => {
       if (!selectTopic) {
         await getDocs(collection(db, "topics")).then((querySnapshot) => {
-        const newData = querySnapshot.docs.map((doc) => ({...doc.data(), id:doc.id }));
+        let newData = querySnapshot.docs.map((doc) => ({...doc.data(), id:doc.id }));
           setTopics(newData);                
         }) 
       }
       if (selectTopic) {
         try {
-          await getDocs(collection(db,"topics", topic, "notecards")).then((querySnapshot) => {  
-            const newData = querySnapshot.docs.map((doc) => ({...doc.data(), id:doc.id }));
+          await getDocs(collection(db, "topics", topic, "notecards")).then((querySnapshot) => {  
+            let newData = querySnapshot.docs.map((doc) => ({...doc.data(), id:doc.id }));
+            newData = newData.sort( (a,b) => {
+              return a.lastModified.milliseconds - b.lastModified.milliseconds
+            })
             if(newData) {
               setCardSet(newData); 
             }
@@ -77,6 +80,11 @@ export default function CardBuilder() {
     } else { alert("Please add a question and answer to the notecard")}
   }
 
+  const selectSpecificNote = async (index) => {
+    let card = cardSet[index]
+    setCurrentCard(card)
+  }
+
   const editQuestion = (event) => {
     setCurrentCard({
       question: event.target.value,
@@ -115,7 +123,7 @@ export default function CardBuilder() {
       <div className="flex flex-col w-full md:flex-row items-center">
         {selectTopic && (
           <>
-          <form onSubmit={addNote} className="flex flex-col items-center w-1/2 md:flex-row md:w-full">
+          <div className="flex flex-col items-center w-1/2 md:flex-row md:w-full">
             {/* Note Card Builder */}
             <main className="flex flex-col items-center w-full">
               <div className="flex flex-col mt-10 w-full md:w-4/6 items-center">
@@ -140,7 +148,6 @@ export default function CardBuilder() {
             {/* display note */}
             <div className="flex flex-col mt-10 md:mr-10 md:w-2/6">
               <button 
-                type="submit"
                 className="mb-5 bg-black text-white py-3 px-5 rounded-md hover:bg-gray-700 whitespace-nowrap w-auto"
                 onClick={addNote}>Add your notecard
               </button>
@@ -151,12 +158,12 @@ export default function CardBuilder() {
               <div className="flex items-center justify-center">
                 { cardSet.length > 0  && cardSet.map((card, index) => (
                   <div className="flex items-center" key={card.id}>
-                    <button className="flex mr-2 text-center">{index + 1}</button>
+                    <button onClick={() => selectSpecificNote(index)} className="flex mr-2 text-center">{index + 1}</button>
                   </div>
                 ))}
               </div>
             </div>
-          </form>
+          </div>
         </>
         )}
       </div>
