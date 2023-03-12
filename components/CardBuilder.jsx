@@ -1,19 +1,20 @@
 import { useState, useEffect } from "react";
 import uuid from "react-uuid"
-import { collection, addDoc, getDocs, setDoc, doc } from "firebase/firestore"; 
+import { collection, addDoc, getDocs, setDoc, doc, deleteDoc } from "firebase/firestore"; 
 import { db } from "@/utils/firebase";
 
 export default function CardBuilder() {
 
-  const [topic, setTopic] = useState("");
+
   const [topics, setTopics] = useState([]);
+  const [topic, setTopic] = useState("");
   const [selectTopic, setSelectTopic] = useState(false);
+  const [cardSet, setCardSet] = useState([]);
   const [currentCard, setCurrentCard] = useState({
     question: "",
     answer: "",
     id: null,
   });
-  const [cardSet, setCardSet] = useState([]);
 
   useEffect(()=> {
     const getTopics = async () => {
@@ -60,43 +61,67 @@ export default function CardBuilder() {
 
   const addNote = async (e) => {
     e.preventDefault();
+    let newId;
+    newId = uuid();
     if(currentCard.answer.length > 0 && currentCard.question.length > 0) {
-      const data = await addDoc(collection(db, "topics", topic, "notecards"), {
+      await setDoc(doc(db, "topics", topic, "notecards", newId), {
         question: currentCard.question,
         answer: currentCard.answer,
-        id: uuid(),
+        id: newId,
         lastModified:{
           seconds: Date.now()/1000,
           milliseconds: Date.now()
         }
       })
-      
+      setCurrentCard({
+        question: currentCard.question,
+        answer: currentCard.answer,
+        id: newId.toString()
+      })
       cardSet.push(currentCard)
+      if(currentCard.id === newId) {
+        setCurrentCard({
+          question: "",
+          answer: "",
+          id: null
+        })
+      }
+    } else { alert("Please add a question and answer to the notecard")}
+  }
+  
+  const deleteNote = async (e) => {
+    if(currentCard.id) {
+      await deleteDoc(doc(db, "topics", topic, "notecards", currentCard.id))
+      let objInd = cardSet.findIndex((obj) => obj.id === currentCard.id)
+      if(objInd > -1) {
+        cardSet.splice(objInd, 1);
+      }
       setCurrentCard({
         question: "",
         answer: "",
         id: null
       })
-    } else { alert("Please add a question and answer to the notecard")}
+    }
   }
 
   const selectSpecificNote = async (index) => {
     let card = cardSet[index]
     setCurrentCard(card)
+    console.log(currentCard)
   }
 
   const editQuestion = (event) => {
     setCurrentCard({
       question: event.target.value,
       answer: currentCard.answer,  
-      id: currentCard.id? currentCard.id : uuid(),
+      id: currentCard.id
   })}
 
   const editAnswer = (event) => {
     setCurrentCard({
       question: currentCard.question,
       answer: event.target.value,  
-      id: currentCard.id? currentCard.id : uuid(),
+      id: currentCard.id
   })}
 
   return (
@@ -104,17 +129,17 @@ export default function CardBuilder() {
       {!selectTopic && (
         <div className="flex flex-col items-center justify-center whitespace-nowrap w-full mt-10">
           <span className="text-3xl font-bold mb-8">Please select a topic or create a new one</span>
-          <form className="flex mb-5">
+          <div className="flex mb-5">
             <input 
             onChange={createTopic} 
             type="text" placeholder="create a new topic"
             className="border-black border-2 border-solid rounded px-1"></input>
-            <button className="ml-4 border-2 border-black border-solid rounded px-4 hover:bg-gray-200" onSubmit={selectTopicButtonHandler}>Create Topic</button>
-          </form>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 m-10">
+            <button className="ml-4 px-4 py-2 border-2 border-black border-solid rounded hover:bg-gray-200" onClick={selectTopicButtonHandler}>Create Topic</button>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 m-10 w-4/6 md:w-full">
             {topics && topics.map((t) => (
-              <div className="" key={t.id}>
-                <button className="flex py-10 justify-center text-center bg-gray-200 hover:bg-gray-300 p-5 rounded-sm" onClick={() => selectTopicListHandler(t)}>{t.id}</button> 
+              <div className="w-full" key={t.id}>
+                <button className="flex py-10 p-5 w-full justify-center text-center bg-gray-200 hover:bg-gray-300 rounded-sm" onClick={() => selectTopicListHandler(t)}>{t.id}</button> 
               </div>
             ))}
           </div>
@@ -146,11 +171,17 @@ export default function CardBuilder() {
             </main>
 
             {/* display note */}
-            <div className="flex flex-col mt-10 md:mr-10 md:w-2/6">
-              <button 
-                className="mb-5 bg-black text-white py-3 px-5 rounded-md hover:bg-gray-700 whitespace-nowrap w-auto"
-                onClick={addNote}>Add your notecard
-              </button>
+            <div className="flex flex-col mt-10 md:mr-10 md:w-2/6 items-center">
+              <div className="flex flex-col lg:flex-row lg:space-x-8">
+                <button 
+                  className="mb-5 bg-black text-white py-3 px-5 rounded-md hover:bg-gray-700 whitespace-nowrap w-full"
+                  onClick={addNote}>Add your notecard
+                </button>
+                <button 
+                  className="mb-5 bg-black text-white py-3 px-5 rounded-md hover:bg-gray-700 whitespace-nowrap w-full"
+                  onClick={deleteNote}>Delete your notecard
+                </button>
+              </div>
               <span className="mb-5 text-center">Here are your note cards</span>
               <span className="line-clamp-3">{currentCard.question}</span>
               <span className="line-clamp-3 mb-10">{currentCard.answer}</span>
