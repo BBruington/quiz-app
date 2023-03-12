@@ -92,69 +92,74 @@ export default function CardBuilder() {
   })}
 
   return (
-    <div className="flex flex-col w-full md:flex-row items-center">
-
+    <div className="w-full">
       {!selectTopic && (
-        <div>
-          <span>Please select a topic or create a new one</span>
-          <form className="flex">
-            <input onChange={createTopic} type="text" placeholder="create a new topic"></input>
-            <button onSubmit={selectTopicButtonHandler}>Create Topic</button>
+        <div className="flex flex-col items-center justify-center whitespace-nowrap w-full mt-10">
+          <span className="text-3xl font-bold mb-8">Please select a topic or create a new one</span>
+          <form className="flex mb-5">
+            <input 
+            onChange={createTopic} 
+            type="text" placeholder="create a new topic"
+            className="border-black border-2 border-solid rounded px-1"></input>
+            <button className="ml-4 border-2 border-black border-solid rounded px-4 hover:bg-gray-200" onSubmit={selectTopicButtonHandler}>Create Topic</button>
           </form>
-          {topics && topics.map((t) => (
-            <div key={t.id}>
-              <button onClick={() => selectTopicListHandler(t)}>{t.id}</button> 
-            </div>
-          ))}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 m-10">
+            {topics && topics.map((t) => (
+              <div className="" key={t.id}>
+                <button className="flex py-10 justify-center text-center bg-gray-200 hover:bg-gray-300 p-5 rounded-sm" onClick={() => selectTopicListHandler(t)}>{t.id}</button> 
+              </div>
+            ))}
+          </div>
         </div>
       )}
+      <div className="flex flex-col w-full md:flex-row items-center">
+        {selectTopic && (
+          <>
+          <form onSubmit={addNote} className="flex flex-col items-center w-1/2 md:flex-row md:w-full">
+            {/* Note Card Builder */}
+            <main className="flex flex-col items-center w-full">
+              <div className="flex flex-col mt-10 w-full md:w-4/6 items-center">
+                <span className="text-sm mb-5 bg-black text-white py-2 w-full text-center rounded-sm">Insert your question:</span>
+                <textarea 
+                  value={currentCard.question}
+                  id="question"
+                  onChange={editQuestion}
+                  className="flex mb-4 p-2 w-full h-30vh border border-black" type="text">
+                </textarea>
+              </div>
+              <div className="flex flex-col mt-5 md:mt-10 w-full md:w-4/6 items-center">
+                <span className="text-sm my-5 bg-black text-white py-2 w-full text-center rounded-sm">Insert your answer:</span>
+                <textarea 
+                  value={currentCard.answer}
+                  onChange={editAnswer}
+                  className="flex mb-4 p-2 w-full h-80 border border-black" type="text">
+                </textarea>
+              </div>
+            </main>
 
-      {selectTopic && (
-      <>
-        <form onSubmit={addNote} className="flex flex-col items-center w-1/2 md:flex-row md:w-full">
-          {/* Note Card Builder */}
-          <main className="flex flex-col items-center w-full">
-            <div className="flex flex-col mt-10 w-full md:w-4/6 items-center">
-              <span className="text-sm mb-5 bg-black text-white py-2 w-full text-center rounded-sm">Insert your question:</span>
-              <textarea 
-                value={currentCard.question}
-                id="question"
-                onChange={editQuestion}
-                className="flex mb-4 p-2 w-full h-30vh border border-black" type="text">
-              </textarea>
+            {/* display note */}
+            <div className="flex flex-col mt-10 md:mr-10 md:w-2/6">
+              <button 
+                type="submit"
+                className="mb-5 bg-black text-white py-3 px-5 rounded-md hover:bg-gray-700 whitespace-nowrap w-auto"
+                onClick={addNote}>Add your notecard
+              </button>
+              <span className="mb-5 text-center">Here are your note cards</span>
+              <span className="line-clamp-3">{currentCard.question}</span>
+              <span className="line-clamp-3 mb-10">{currentCard.answer}</span>
+              {/* <span>Topic: {topic && topic}</span> */}
+              <div className="flex items-center justify-center">
+                { cardSet.length > 0  && cardSet.map((card, index) => (
+                  <div className="flex items-center" key={card.id}>
+                    <button className="flex mr-2 text-center">{index + 1}</button>
+                  </div>
+                ))}
+              </div>
             </div>
-            <div className="flex flex-col mt-5 md:mt-10 w-full md:w-4/6 items-center">
-              <span className="text-sm my-5 bg-black text-white py-2 w-full text-center rounded-sm">Insert your answer:</span>
-              <textarea 
-                value={currentCard.answer}
-                onChange={editAnswer}
-                className="flex mb-4 p-2 w-full h-80 border border-black" type="text">
-              </textarea>
-            </div>
-          </main>
-
-          {/* display note */}
-          <div className="flex flex-col mt-10 md:mr-10 md:w-2/6">
-            <button 
-              type="submit"
-              className="mb-5 bg-black text-white py-3 px-5 rounded-md hover:bg-gray-700 whitespace-nowrap w-auto"
-              onClick={addNote}>Add your notecard
-            </button>
-            <span className="mb-5 text-center">Here are your note cards</span>
-            <span className="line-clamp-3">{currentCard.question}</span>
-            <span className="line-clamp-3 mb-10">{currentCard.answer}</span>
-            {/* <span>Topic: {topic && topic}</span> */}
-            <div className="flex items-center justify-center">
-              { cardSet.length > 0  && cardSet.map((card, index) => (
-                <div className="flex items-center" key={card.id}>
-                  <button className="flex mr-2 text-center">{index + 1}</button>
-                </div>
-              ))}
-            </div>
-          </div>
-        </form>
-      </>
-      )}
+          </form>
+        </>
+        )}
+      </div>
     </div>
   )
 }
