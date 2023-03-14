@@ -59,6 +59,14 @@ export default function CardBuilder() {
     setTopic(value);
   }
 
+  const newNote = () => {
+    setCurrentCard({
+      question: "",
+      answer: "",
+      id: null
+    })
+  }
+
   const addNote = async (e) => {
     e.preventDefault();
     let newId;
@@ -224,6 +232,10 @@ export default function CardBuilder() {
                   </div>
                 ))}
               </div>
+              <button 
+                className="my-5 mt-12 bg-black text-white py-3 px-5 rounded-md hover:bg-gray-700 whitespace-nowrap w-full"
+                onClick={newNote}>New notecard
+              </button>
             </div>
           </div>
         </>
