@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 
 export default function QuizCard({topic}) {
 
-  const [ currentQuestion, setCurrentquestion ] = useState(null)
+  const [ currentQuestion, setCurrentquestion ] = useState(null);
   const [ showAnswer, setShowAnswer ] = useState(false);
   const [ questionNum, setQuestionNum ] = useState(0);
 

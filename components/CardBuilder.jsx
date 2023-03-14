@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import uuid from "react-uuid"
-import { collection, addDoc, getDocs, setDoc, doc, deleteDoc } from "firebase/firestore"; 
+import { collection, addDoc, getDocs, setDoc, doc, deleteDoc, updateDoc } from "firebase/firestore"; 
 import { db } from "@/utils/firebase";
 
 export default function CardBuilder() {
@@ -88,6 +88,30 @@ export default function CardBuilder() {
       }
     } else { alert("Please add a question and answer to the notecard")}
   }
+
+  const editNote = async (e) => {
+    let noteRef = doc(db, "topics", topic, "notecards", currentCard.id)
+    try {
+      await updateDoc(noteRef, {
+        question: currentCard.question,
+          answer: currentCard.answer,
+          id: currentCard.id,
+          lastModified:{
+            seconds: Date.now()/1000,
+            milliseconds: Date.now()
+          }
+      })
+      let noteInd = cardSet.findIndex((obj => obj.id == currentCard.id))
+      cardSet[noteInd].question = currentCard.question;
+      cardSet[noteInd].answer = currentCard.answer;
+      cardSet[noteInd].id = currentCard.id;
+      setCurrentCard({
+        question: "",
+        answer: "",
+        id: null
+      })
+    } catch(error) {console.error(error)}
+  }
   
   const deleteNote = async (e) => {
     if(currentCard.id) {
@@ -173,10 +197,17 @@ export default function CardBuilder() {
             {/* display note */}
             <div className="flex flex-col mt-10 md:mr-10 md:w-2/6 items-center">
               <div className="flex flex-col lg:flex-row lg:space-x-8">
+                {currentCard.id === null ? 
+                <button 
+                className="mb-5 bg-black text-white py-3 px-5 rounded-md hover:bg-gray-700 whitespace-nowrap w-full"
+                onClick={addNote}>Add your notecard
+                </button>
+                :
                 <button 
                   className="mb-5 bg-black text-white py-3 px-5 rounded-md hover:bg-gray-700 whitespace-nowrap w-full"
-                  onClick={addNote}>Add your notecard
+                  onClick={editNote}>Edit existing notecard
                 </button>
+                }
                 <button 
                   className="mb-5 bg-black text-white py-3 px-5 rounded-md hover:bg-gray-700 whitespace-nowrap w-full"
                   onClick={deleteNote}>Delete your notecard
