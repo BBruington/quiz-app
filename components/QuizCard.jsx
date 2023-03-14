@@ -29,7 +29,9 @@ export default function QuizCard({topic}) {
 
   const nextQuestionHandler = () => {
     setShowAnswer(false);
-    setQuestionNum(questionNum + 1);
+    if (questionNum + 1 < topic.length) {
+      setQuestionNum(questionNum + 1);
+    } else setQuestionNum(0)
   }
   
   return (
