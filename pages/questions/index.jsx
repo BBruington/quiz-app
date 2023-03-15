@@ -39,7 +39,7 @@ export default function Questions() {
 
   return (
     <>
-      <span className="flex justify-center mt-10">What topic would you like to study? </span>
+      <span className="flex justify-center mt-10 text-3xl font-bold">What topic would you like to study? </span>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 m-10">
         {!selectTopic && (
           <>

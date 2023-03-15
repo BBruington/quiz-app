@@ -139,7 +139,6 @@ export default function CardBuilder() {
   const selectSpecificNote = async (index) => {
     let card = cardSet[index]
     setCurrentCard(card)
-    console.log(currentCard)
   }
 
   const editQuestion = (event) => {
@@ -181,6 +180,7 @@ export default function CardBuilder() {
         {selectTopic && (
           <>
           <div className="flex flex-col items-center w-1/2 md:flex-row md:w-full">
+
             {/* Note Card Builder */}
             <main className="flex flex-col items-center w-full">
               <div className="flex flex-col mt-10 w-full md:w-4/6 items-center">
@@ -204,7 +204,7 @@ export default function CardBuilder() {
 
             {/* display note */}
             <div className="flex flex-col mt-10 md:mr-10 md:w-2/6 items-center">
-              <div className="flex flex-col lg:flex-row lg:space-x-8">
+              <div className="flex flex-col lg:flex-row lg:space-x-8 lg:mb-10">
                 {currentCard.id === null ? 
                 <button 
                 className="mb-5 bg-black text-white py-3 px-5 rounded-md hover:bg-gray-700 whitespace-nowrap w-full"
