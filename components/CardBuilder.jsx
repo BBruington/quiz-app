@@ -224,7 +224,6 @@ export default function CardBuilder() {
               <span className="mb-5 text-center">Here are your note cards</span>
               <span className="line-clamp-3">{currentCard.question}</span>
               <span className="line-clamp-3 mb-10">{currentCard.answer}</span>
-              {/* <span>Topic: {topic && topic}</span> */}
               <div className="flex items-center justify-center">
                 { cardSet.length > 0  && cardSet.map((card, index) => (
                   <div className="flex items-center" key={card.id}>

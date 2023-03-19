@@ -19,7 +19,7 @@ export async function getStaticProps(staticProps) {
   .then((querySnapshot) => {  
     let newData = querySnapshot.docs.map((doc) => ({...doc.data(), id:doc.id }));
     newData = newData.sort( (a,b) => {
-      return a.lastModified.milliseconds - b.lastModified.milliseconds
+      return b.lastModified.milliseconds - a.lastModified.milliseconds
     })
     if(newData) {
       notes = newData; 

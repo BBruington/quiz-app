@@ -2,21 +2,38 @@ import { useState, useEffect } from "react";
 
 
 export default function QuizCard({topic}) {
-
+  const [ cardSet, setCardSet ] = useState(topic);
+  const [ shuffleCards, setShuffleCards ] = useState(false);
   const [ currentQuestion, setCurrentquestion ] = useState(null);
   const [ showAnswer, setShowAnswer ] = useState(false);
   const [ questionNum, setQuestionNum ] = useState(0);
 
   useEffect(() => {
-    const newFilteredQuestions = topic.filter((question, index) => {
-      return index === questionNum
-    });
-    if(newFilteredQuestions !== 0){
-      setCurrentquestion(newFilteredQuestions); 
-    } else {
-      setQuestionNum(0);
+    if (questionNum !== null) {
+      const newFilteredQuestions = cardSet.filter((question, index) => {
+        return index === questionNum
+      });
+      if(newFilteredQuestions !== 0){
+        setCurrentquestion(newFilteredQuestions); 
+      } else {
+        setQuestionNum(0);
+      }
     }
-  }, [questionNum]);
+  }, [questionNum, shuffleCards]);
+
+  const shuffle = (array) => {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const temp = array[i];
+
+        // Swap
+        array[i] = array[j];
+        array[j] = temp;
+    }
+    setCardSet(array);
+    setQuestionNum(0);
+    setShuffleCards(!shuffleCards);
+};
 
   const showAnswerHandler = () => {
     setShowAnswer(!showAnswer);
@@ -57,6 +74,7 @@ export default function QuizCard({topic}) {
               }
 
               <button onClick={nextQuestionHandler} className="ml-10 py-3 px-5 border-solid border-2 hover:bg-sky-500 bg-sky-300 border-sky-500 rounded">Next Question</button>
+              <button onClick={() => shuffle(cardSet)} className="ml-10 py-3 px-5 border-solid border-2 hover:bg-sky-500 bg-sky-300 border-sky-500 rounded">Shuffle Questions</button>
             </div>
           </div>
         ))}
