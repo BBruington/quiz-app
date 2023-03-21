@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 
 export default function QuizCard({topic}) {
   const [ cardSet, setCardSet ] = useState(topic);
-  const [ shuffleCards, setShuffleCards ] = useState(false);
+  const [ updateCards, setUpdateCards ] = useState(false);
   const [ currentQuestion, setCurrentquestion ] = useState(null);
   const [ showAnswer, setShowAnswer ] = useState(false);
   const [ questionNum, setQuestionNum ] = useState(0);
@@ -19,7 +19,7 @@ export default function QuizCard({topic}) {
         setQuestionNum(0);
       }
     }
-  }, [questionNum, shuffleCards]);
+  }, [questionNum, updateCards]);
 
   const shuffle = (array) => {
     for (let i = array.length - 1; i > 0; i--) {
@@ -31,8 +31,9 @@ export default function QuizCard({topic}) {
         array[j] = temp;
     }
     setCardSet(array);
-    setQuestionNum(0);
-    setShuffleCards(!shuffleCards);
+    if ( questionNum === 0){
+      setUpdateCards(!updateCards);
+    } else (setQuestionNum(0))
 };
 
   const showAnswerHandler = () => {
