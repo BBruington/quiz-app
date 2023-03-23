@@ -207,17 +207,17 @@ export default function CardBuilder() {
               <div className="flex flex-col lg:flex-row lg:space-x-8 lg:mb-10">
                 {currentCard.id === null ? 
                 <button 
-                className="mb-5 bg-black text-white py-3 px-5 rounded-md hover:bg-gray-700 whitespace-nowrap w-full"
+                className="button"
                 onClick={addNote}>Add your notecard
                 </button>
                 :
                 <button 
-                  className="mb-5 bg-black text-white py-3 px-5 rounded-md hover:bg-gray-700 whitespace-nowrap w-full"
+                  className="button"
                   onClick={editNote}>Edit existing notecard
                 </button>
                 }
                 <button 
-                  className="mb-5 bg-black text-white py-3 px-5 rounded-md hover:bg-gray-700 whitespace-nowrap w-full"
+                  className="button"
                   onClick={deleteNote}>Delete your notecard
                 </button>
               </div>
@@ -232,7 +232,7 @@ export default function CardBuilder() {
                 ))}
               </div>
               <button 
-                className="my-5 mt-12 bg-black text-white py-3 px-5 rounded-md hover:bg-gray-700 whitespace-nowrap w-full"
+                className="button mt-12"
                 onClick={newNote}>New notecard
               </button>
             </div>
