@@ -7,6 +7,7 @@ export default function Nav() {
       <Link href="/" className="ml-5 pt-3 text-lg font-bold hover:underline cursor-pointer">Home</Link>
       <Link href="/questions" className="pt-3 text-lg hover:underline  font-bold cursor-pointer">Study Topics</Link>
       <Link href="/builder" className="pt-3 text-lg hover:underline  font-bold cursor-pointer">Create / Edit Topic</Link>
+      <Link href="/quiz" className="pt-3 text-lg hover:underline  font-bold cursor-pointer">Take a Quiz</Link>
     </div>
   )
 }
