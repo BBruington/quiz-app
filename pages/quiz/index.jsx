@@ -4,7 +4,7 @@ export default function Quiz() {
 
   return (
     <>
-    <TestCard />
+      <TestCard />
     </>
   )
 }

@@ -3,11 +3,7 @@ import uuid from "react-uuid"
 import { collection, addDoc, getDocs, setDoc, doc, deleteDoc, updateDoc } from "firebase/firestore"; 
 import { db } from "@/utils/firebase";
 
-export default function CardBuilder() {
-
-
-  const [topics, setTopics] = useState([]);
-  const [topic, setTopic] = useState("");
+export default function CardBuilder({topic, topics}) {
   const [selectTopic, setSelectTopic] = useState(false);
   const [cardSet, setCardSet] = useState([]);
   const [currentCard, setCurrentCard] = useState({
@@ -18,25 +14,17 @@ export default function CardBuilder() {
 
   useEffect(()=> {
     const getTopics = async () => {
-      if (!selectTopic) {
-        await getDocs(collection(db, "topics")).then((querySnapshot) => {
-        let newData = querySnapshot.docs.map((doc) => ({...doc.data(), id:doc.id }));
-          setTopics(newData);                
+      try {
+        await getDocs(collection(db, "topics", topic, "notecards")).then((querySnapshot) => {  
+          let newData = querySnapshot.docs.map((doc) => ({...doc.data(), id:doc.id }));
+          newData = newData.sort( (a,b) => {
+            return a.lastModified.milliseconds - b.lastModified.milliseconds
+          })
+          if(newData) {
+            setCardSet(newData); 
+          }
         }) 
-      }
-      if (selectTopic) {
-        try {
-          await getDocs(collection(db, "topics", topic, "notecards")).then((querySnapshot) => {  
-            let newData = querySnapshot.docs.map((doc) => ({...doc.data(), id:doc.id }));
-            newData = newData.sort( (a,b) => {
-              return a.lastModified.milliseconds - b.lastModified.milliseconds
-            })
-            if(newData) {
-              setCardSet(newData); 
-            }
-          }) 
-        } catch (error) {console.error(error)} 
-      }
+      } catch (error) {console.error(error)} 
     }
     getTopics()
   }, [selectTopic])
@@ -157,7 +145,7 @@ export default function CardBuilder() {
 
   return (
     <div className="w-full">
-      {!selectTopic && (
+      {/* {!selectTopic && (
         <div className="flex flex-col items-center justify-center whitespace-nowrap w-full mt-10">
           <span className="text-3xl font-bold mb-8">Please select a topic or create a new one</span>
           <div className="flex mb-5">
@@ -175,9 +163,9 @@ export default function CardBuilder() {
             ))}
           </div>
         </div>
-      )}
+      )} */}
       <div className="flex flex-col w-full md:flex-row items-center">
-        {selectTopic && (
+        {/* {selectTopic && ( */}
           <>
           <div className="flex flex-col items-center w-1/2 md:flex-row md:w-full">
 
@@ -238,7 +226,7 @@ export default function CardBuilder() {
             </div>
           </div>
         </>
-        )}
+        {/* )} */}
       </div>
     </div>
   )
