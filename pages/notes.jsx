@@ -2,45 +2,41 @@ import NoteSideBar from '../components/myNotes/noteSideBar';
 import NoteMain from '../components/myNotes/noteMain';
 import uuid from 'react-uuid';
 import { useState, useEffect } from 'react';
-import { addDoc, updateDoc, doc } from 'firebase/firestore';
-import { getCurrentUser, notesCollectionRef, db } from "../../../libs/firebase/firebase";
+import { addDoc, updateDoc, doc, setDoc, getDocs } from 'firebase/firestore';
+import { getCurrentUser, db } from "../utils/firebase";
 import useSWR from 'swr';
 
 const fetcher = () => fetch(url).then(res => res.json())
 export default function Notes() {
+
+  const [users, setUsers] = useState(null)
   const [emailNotes, setEmailNotes] = useState([]);
   const [activeNote, setActiveNote] = useState(false);
   const [addNoteToggle, setAddNoteToggle] = useState(false);
-  const [editMode,setEditMode] = useState(false);
-  const { data, error, isLoading } = useSWR('/api/getUserNotesData', fetcher);
+  const [editMode, setEditMode] = useState(false);
+  //const { data, error, isLoading } = useSWR('/api/getUserNotesData', fetcher);
 
-  const defaultEmailNotes = [{
-    email:'',
+  const defaultEmailNotes = {
+    title:'Remember to sign in to save your notes',
+    body:'',
     id:uuid(),
-    notes:[{
-      title:'Remember to sign in to save your notes',
-      body:'',
-      id:uuid(),
-      lastModified:{
-        seconds: Date.now()/1000,
-        milliseconds: Date.now()
-      }
-    }]
-  }]
+    lastModified:{
+      seconds: Date.now()/1000,
+      milliseconds: Date.now()
+    }
+  }
 
   useEffect(() => {
     const getNotes = async () => {  
-      if(data) {
+      try{
         const currentUser = await getCurrentUser();   
         if(currentUser) {
-          const notesForEmailData = data.filter((note) => note.email.toLowerCase() === currentUser.email.toLowerCase())
-          if(notesForEmailData[0]){
-            setEmailNotes(notesForEmailData)  
-          }else {
-            await addDoc(notesCollectionRef, {
-              email:currentUser.email,
-              id:uuid(),
-              notes:[{
+          setUsers(currentUser);
+          const notebook = await getDocs(db, "users", currentUser.email, "notebook")
+          if(notebook.length === 0) {
+            const newId = uuid()
+            await setDoc(db, "users", currentUser.email, "notebook", newId, {
+                id: newId,
                 title:'Untitled Note',
                 body:'',
                 id:uuid(),
@@ -48,16 +44,16 @@ export default function Notes() {
                   seconds: Date.now()/1000,
                   milliseconds: Date.now()
                 }
-              }]
             })
-            console.log('created doc')
           }
-        }
-      }  else {setEmailNotes(defaultEmailNotes)}
+        }else {setEmailNotes(defaultEmailNotes)}
+      } catch (error) {
+        console.error("error: ", error)
+      }
     }
 
     getNotes();
-  },[data]) 
+  },[]) 
 
   const deleteNote = async (idToDelete) => {
     if(emailNotes[0]) {
@@ -68,7 +64,7 @@ export default function Notes() {
         emailNotes[0].notes.filter((note) => {return note.id !== idToDelete})
       }]
         setEmailNotes(updatedNotesArray)
-        const noteDoc = doc(db, "user notes", emailNotes[0].id)
+        const noteDoc = doc(db,"users", users.email, "notebook", emailNotes[0].id)
         await updateDoc(noteDoc, updatedNotesArray[0])
     }
   }
@@ -90,7 +86,7 @@ export default function Notes() {
     setEmailNotes(addedNote)
     setAddNoteToggle(!addNoteToggle)
     
-    const noteDoc = doc(db, "user notes", emailNotes[0].id)
+    const noteDoc = doc(db,"users", users.email, "notebook", emailNotes[0].id)
     await updateDoc(noteDoc, addedNote[0])
    }
 
@@ -107,7 +103,7 @@ export default function Notes() {
         return note;
       })}]
       setEmailNotes(updatedNotesArray)
-      const noteDoc = doc(db, "user notes", emailNotes[0].id)
+      const noteDoc = doc(db,"users", users.email, "notebook", emailNotes[0].id)
       await updateDoc(noteDoc, updatedNotesArray[0])
     }
   }
@@ -118,8 +114,7 @@ export default function Notes() {
       return activeNoteListener
     }
   }
-  if (error) return <div>failed to load</div>
-  if (isLoading) return <div>loading...</div>
+
   return (
     <>
     

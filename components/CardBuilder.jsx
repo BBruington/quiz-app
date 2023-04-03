@@ -4,6 +4,7 @@ import { collection, addDoc, getDocs, setDoc, doc, deleteDoc, updateDoc } from "
 import { db, getCurrentUser } from "@/utils/firebase";
 
 export default function CardBuilder({topic}) {
+  
   const [users, setUsers] = useState(null)
   const [cardTrigger, setCardTrigger] = useState(false);
   const [cardSet, setCardSet] = useState([]);
