@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import uuid from "react-uuid"
 import { collection, addDoc, getDocs, setDoc, doc, deleteDoc, updateDoc } from "firebase/firestore"; 
-import { db } from "@/utils/firebase";
+import { db, getCurrentUser } from "@/utils/firebase";
 
-export default function CardBuilder({topic, topics}) {
-  const [selectTopic, setSelectTopic] = useState(false);
+export default function CardBuilder({topic}) {
+  const [users, setUsers] = useState(null)
+  const [cardTrigger, setCardTrigger] = useState(false);
   const [cardSet, setCardSet] = useState([]);
   const [currentCard, setCurrentCard] = useState({
     question: "",
@@ -13,9 +14,13 @@ export default function CardBuilder({topic, topics}) {
   });
 
   useEffect(()=> {
-    const getTopics = async () => {
+    const getCardsFromDb = async () => {
       try {
-        await getDocs(collection(db, "topics", topic, "notecards")).then((querySnapshot) => {  
+        const currentUser = await getCurrentUser();
+        if(users === null && currentUser !== null ) {
+            setUsers(currentUser)
+        }
+        await getDocs(collection(db, "users", currentUser.email, "topics", topic, "notecards")).then((querySnapshot) => {  
           let newData = querySnapshot.docs.map((doc) => ({...doc.data(), id:doc.id }));
           newData = newData.sort( (a,b) => {
             return a.lastModified.milliseconds - b.lastModified.milliseconds
@@ -26,8 +31,8 @@ export default function CardBuilder({topic, topics}) {
         }) 
       } catch (error) {console.error(error)} 
     }
-    getTopics()
-  }, [selectTopic])
+    getCardsFromDb()
+  }, [cardTrigger])
 
   const newNote = () => {
     setCurrentCard({
@@ -42,7 +47,7 @@ export default function CardBuilder({topic, topics}) {
     let newId;
     newId = uuid();
     if(currentCard.answer.length > 0 && currentCard.question.length > 0) {
-      await setDoc(doc(db, "topics", topic, "notecards", newId), {
+      await setDoc(doc(db, "users", users.email, "topics", topic, "notecards", newId), {
         question: currentCard.question,
         answer: currentCard.answer,
         id: newId,
@@ -52,23 +57,16 @@ export default function CardBuilder({topic, topics}) {
         }
       })
       setCurrentCard({
-        question: currentCard.question,
-        answer: currentCard.answer,
-        id: newId.toString()
+        question: "",
+        answer: "",
+        id: null
       })
-      cardSet.push(currentCard)
-      if(currentCard.id === newId) {
-        setCurrentCard({
-          question: "",
-          answer: "",
-          id: null
-        })
-      }
+      setCardTrigger(!cardTrigger)
     } else { alert("Please add a question and answer to the notecard")}
   }
 
   const editNote = async (e) => {
-    let noteRef = doc(db, "topics", topic, "notecards", currentCard.id)
+    let noteRef = doc(db, "users", users.email, "topics", topic, "notecards", currentCard.id)
     try {
       await updateDoc(noteRef, {
         question: currentCard.question,
@@ -93,7 +91,7 @@ export default function CardBuilder({topic, topics}) {
   
   const deleteNote = async (e) => {
     if(currentCard.id) {
-      await deleteDoc(doc(db, "topics", topic, "notecards", currentCard.id))
+      await deleteDoc(doc(db,"users", users.email, "topics", topic, "notecards", currentCard.id))
       let objInd = cardSet.findIndex((obj) => obj.id === currentCard.id)
       if(objInd > -1) {
         cardSet.splice(objInd, 1);
@@ -128,7 +126,7 @@ export default function CardBuilder({topic, topics}) {
   return (
     <div className="w-full">
       <div className="flex flex-col w-full md:flex-row items-center">
-          <>
+        <>
           <div className="flex flex-col items-center w-1/2 md:flex-row md:w-full">
 
             {/* Note Card Builder */}

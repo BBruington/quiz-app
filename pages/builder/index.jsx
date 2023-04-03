@@ -3,7 +3,7 @@ import CardBuilder from "../../components/CardBuilder";
 import TestBuilder from "../../components/TestBuilder";
 import uuid from "react-uuid"
 import { collection, addDoc, getDocs, setDoc, doc, deleteDoc, updateDoc } from "firebase/firestore"; 
-import { db } from "@/utils/firebase";
+import { db, getCurrentUser } from "@/utils/firebase";
 
 export default function Builder() {
   const [topics, setTopics] = useState([]);
@@ -11,18 +11,23 @@ export default function Builder() {
   const [selectTopic, setSelectTopic] = useState(false);
   const [card, setCard] = useState(false);
   const [quiz, setQuiz] = useState(false);
+  const [users, setUsers] = useState(null);  
 
   useEffect(()=> {
     const getTopics = async () => {
+      const currentUser = await getCurrentUser();
+      if(currentUser !== null) {
+        setUsers(currentUser)
+      } else {setUsers(null)}
       if (!selectTopic) {
-        await getDocs(collection(db, "topics")).then((querySnapshot) => {
+        await getDocs(collection(db, "users", currentUser.email, "topics")).then((querySnapshot) => {
         let newData = querySnapshot.docs.map((doc) => ({...doc.data(), id:doc.id }));
           setTopics(newData);                
         }) 
       }
       if (selectTopic) {
         try {
-          await getDocs(collection(db, "topics", topic, "notecards")).then((querySnapshot) => {  
+          await getDocs(collection(db,"users", currentUser.email, "topics", topic, "notecards")).then((querySnapshot) => {  
             let newData = querySnapshot.docs.map((doc) => ({...doc.data(), id:doc.id }));
             newData = newData.sort( (a,b) => {
               return a.lastModified.milliseconds - b.lastModified.milliseconds
@@ -49,7 +54,7 @@ export default function Builder() {
   }
 
   const selectTopicButtonHandler = async () => {
-    await setDoc(doc(db, "topics", topic,), {
+    await setDoc(doc(db, "users", users.email, "topics", topic,), {
       id: uuid()
     })
     setSelectTopic(true);
