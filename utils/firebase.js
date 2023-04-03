@@ -13,6 +13,8 @@ import { initializeApp } from "firebase/app";
 import { getFirestore, collection, addDoc, getDocs, setDoc, doc, deleteDoc, updateDoc } from "firebase/firestore";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
+import uuid from "react-uuid"
+
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -48,7 +50,15 @@ export const signUpWithEmail = async (email, password) => {
   .then((userCredential) => {
     // Signed in 
     const user = userCredential.user;
-    console.log("user", user)
+    setDoc(doc(db, "users", user.email), {
+      email: user.email,
+      id: uuid(),
+      createdAt: {
+        seconds: Date.now()/1000,
+        milliseconds: Date.now()
+      }
+    })
+    //console.log("user", user)
   })
   .catch((error) => {
     const errorCode = error.code;
