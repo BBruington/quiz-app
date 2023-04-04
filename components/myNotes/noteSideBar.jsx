@@ -3,8 +3,10 @@ import ReactMarkdown from "react-markdown"
 
 export default function NoteSideBar(props) {
 
-  const handleNoteOnClick = (note) => {
-    setActiveNote(note.id)
+  const handleNoteOnClick = (index) => {
+    let currentNote = emailNotes[index]
+    setActiveNote(currentNote)
+    console.log(activeNote)
   }
 
   const handleEditMode = () => {
@@ -24,8 +26,8 @@ export default function NoteSideBar(props) {
           </div>
         </div>
         <div className="app-sidebar-notes">
-          {emailNotes[0] && (emailNotes[0].notes.map((note) => (
-            <div key={note.id} className="p-4 cursor-pointer hover:bg-gray-200" onClick={() => handleNoteOnClick(note)}>
+          {emailNotes[0] && (emailNotes.map((note, index) => (
+            <div key={note.id} className="p-4 cursor-pointer hover:bg-gray-200" onClick={() => handleNoteOnClick(index)}>
               <div className="flex justify-between">
                 <div>
                   <strong>{note.title}</strong> 
