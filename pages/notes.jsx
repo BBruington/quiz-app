@@ -29,16 +29,14 @@ export default function Notes() {
   useEffect(() => {
     const getNotes = async () => {  
       try{
-        const currentUser = await getCurrentUser();   
-        console.log(currentUser)
+        const currentUser = await getCurrentUser(); 
         if(currentUser) {
           setUsers(currentUser);
           console.log(currentUser.email)
           await getDocs(collection(db, "users", currentUser.email, "notebook")).then((querySnapshot) => {
             let newData = querySnapshot.docs.map((doc) => ({...doc.data(), id:doc.id }));
-            console.log(newData)
             newData = newData.sort( (a,b) => {
-              return a.lastModified.milliseconds - b.lastModified.milliseconds
+              return b.lastModified.milliseconds - a.lastModified.milliseconds
             })
             if(newData) {
               setEmailNotes(newData);
@@ -70,8 +68,8 @@ export default function Notes() {
         emailNotes.splice(objInd, 1);
       }
       setActiveNote({
-        question: "",
-        answer: "",
+        title: "Please select a new note",
+        body: "",
         id: null
       })
     }
@@ -91,29 +89,29 @@ export default function Notes() {
       }
     };
     await setDoc(doc(db, "users", users.email, "notebook", newId), newNote)
-    // emailNotes.unshift(newNote)
-    // setActiveNote(newNote)
-     setAddNoteToggle(!addNoteToggle)
+    emailNotes.unshift(newNote)
+    setActiveNote(newNote)
+    setAddNoteToggle(!addNoteToggle)
   }
 
   
 
   const updateNote = async (updatedNote) => {
     if(emailNotes) {
-      const updatedNotesArray = [{
-        email: updatedNote.email,
+      const updatedNotesArray = {
         id: updatedNote.id,
-        notes:
-        activeNote.notes.map((note) => {
-        if(note.id === activeNote) {
-          return updatedNote;
+        body: updatedNote.body,
+        title: updatedNote.title,
+        lastModified:{
+          seconds: updatedNote.lastModified.seconds,
+          milliseconds: updatedNote.lastModified.milliseconds
         }
-        return note;
-      })}]
-      setEmailNotes(updatedNotesArray)
-      const noteDoc = doc(db,"users", users.email, "notebook", emailNotes[0].id)
-      await updateDoc(noteDoc, updatedNotesArray[0])
+      }
+      setActiveNote(updatedNotesArray)
+      const noteDoc = doc(db,"users", users.email, "notebook", activeNote.id)
+      await updateDoc(noteDoc, updatedNotesArray)
     }
+    setAddNoteToggle(!addNoteToggle)
   }
 
   const getActiveNote = () => {
@@ -124,39 +122,40 @@ export default function Notes() {
   return (
     <>
       <div className="flex justify-start">
-      <>
-      <div className="w-2/6 overflow-auto border-r-2 border-r-gray-200 border-b-2 h-90v">
-        <div className="flex justify-between p-4">
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-2xl lg:text-3xl m-0">Notes</h1>
-          <div className="sm:ml-6">
-            <button onClick={handleEditMode} className="text-green-700 hover:text-green-500 font-bold lg:mr-5">Edit Note</button>
-            <button onClick={addNote} className="text-teal-600 hover:text-teal-400 font-bold">Add Note</button>
+        <div className="w-2/6 overflow-auto border-r-2 border-r-gray-200 border-b-2 h-90v">
+          <div className="flex justify-between p-4">
+            <h1 className="text-xl md:text-3xl font-bold items-center text tracking-tight text-gray-900 mt-1 md:m-0">Notes</h1>
+            <div className="flex flex-cols md:flex-row  ml-2">
+              <button onClick={handleEditMode} className="text-green-700 hover:text-green-500 font-bold lg:mr-5 text-center text-sm sm:text-base">Edit Note</button>
+              <button onClick={addNote} className="text-teal-600 hover:text-teal-400 font-bold ml-1 text-center text-sm sm:text-base">Add Note</button>
+            </div>
+          </div>
+          <div className="app-sidebar-notes">
+
+            {/* clickable notes */}
+
+            {(emailNotes.map((note, index) => (
+              <div key={note.id} className="p-4 cursor-pointer hover:bg-gray-200" onClick={() => handleNoteOnClick(index)}>
+                <div className="flex justify-between items-center">
+                  <div>
+                    <strong>{note.title}</strong> 
+                    <ReactMarkdown className="">{note.body && note.body.substr(0, 50) + '...'}</ReactMarkdown>
+
+                    <small className="font-light block">last modified: {new Date(note.lastModified.seconds * 1000).toLocaleDateString("en-US", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                    </small>
+                  </div>
+                  <div className="mt-2 items-center ">
+                    <button onClick={() => deleteNote(note.id)} className="text-orange-700 hover:text-orange-500 font-bold text-sm sm:text-base">Delete</button>
+                  </div>
+                </div>
+              </div>
+            )))}
+
           </div>
         </div>
-        <div className="app-sidebar-notes">
-          {emailNotes[0] && (emailNotes.map((note, index) => (
-            <div key={note.id} className="p-4 cursor-pointer hover:bg-gray-200" onClick={() => handleNoteOnClick(index)}>
-              <div className="flex justify-between">
-                <div>
-                  <strong>{note.title}</strong> 
-                  <ReactMarkdown className="">{note.body && note.body.substr(0, 50) + '...'}</ReactMarkdown>
-
-                  <small className="font-light block">last modified: {new Date(note.lastModified.seconds * 1000).toLocaleDateString("en-US", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                  </small>
-                </div>
-                  <div className="mt-2">
-                    <button onClick={() => deleteNote(note.id)} className="text-orange-700 hover:text-orange-500 font-bold">Delete</button>
-                  </div>
-              </div>
-            </div>
-          )))}
-        </div>
-
-      </div>
-    </>
           <NoteMain 
           activeNote={activeNote}
           updateNote={updateNote}

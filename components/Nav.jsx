@@ -30,7 +30,7 @@ export default function Nav() {
     if (window.location.href === url) window.location.reload(false);
   }
   return (
-    <div className="flex md:space-x-5 space-x-3">
+    <div className="flex justify-center items-center md:space-x-5 space-x-3">
       <Link onClick={() => checkUrl("http://localhost:3000")} href="/" className="ml-5 nav">Home</Link>
       {users ? (
         <button onClick={signOut} className="nav">Sign Out</button>
@@ -42,6 +42,7 @@ export default function Nav() {
       <Link onClick={() => checkUrl("http://localhost:3000/questions")} href="/questions" className="nav">Study Topics</Link>
       <Link onClick={() => checkUrl("http://localhost:3000/builder")} href="/builder" className="nav">Create/Edit Topic</Link>
       <Link onClick={() => checkUrl("http://localhost:3000/quiz")} href="/quiz" className="nav">Take a Quiz</Link>
+      <Link onClick={() => checkUrl("http://localhost:3000/notes")} href="/notes" className="nav">Notebook</Link>
       {users && (
         <span className="nav">Welcome {userEmail}</span>
       )}
