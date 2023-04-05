@@ -2,7 +2,7 @@ import ReactMarkdown from "react-markdown"
 import NoteMain from '../components/myNotes/noteMain';
 import uuid from 'react-uuid';
 import { useState, useEffect } from 'react';
-import { addDoc, updateDoc, doc, setDoc, getDocs, collection } from 'firebase/firestore';
+import { addDoc, updateDoc, doc, setDoc, getDocs, collection, deleteDoc } from 'firebase/firestore';
 import { getCurrentUser, db } from "../utils/firebase";
 import useSWR from 'swr';
 
@@ -29,36 +29,21 @@ export default function Notes() {
   useEffect(() => {
     const getNotes = async () => {  
       try{
-        console.log("start")
         const currentUser = await getCurrentUser();   
         console.log(currentUser)
         if(currentUser) {
           setUsers(currentUser);
-          let notebook = await getDocs(collection(db, "users", currentUser.email, "notebook")).then((querySnapshot) => {
+          console.log(currentUser.email)
+          await getDocs(collection(db, "users", currentUser.email, "notebook")).then((querySnapshot) => {
             let newData = querySnapshot.docs.map((doc) => ({...doc.data(), id:doc.id }));
+            console.log(newData)
             newData = newData.sort( (a,b) => {
               return a.lastModified.milliseconds - b.lastModified.milliseconds
             })
-            console.log(querySnapshot)
-            console.log(newData)
-            if(newData.length !== 0) {
-              setEmailNotes(newData); 
+            if(newData) {
+              setEmailNotes(newData);
             }
-          }) 
-          console.log(notebook)
-          if(newData.length === 0) {
-            const newId = uuid()
-            await setDoc(doc(db, "users", currentUser.email, "notebook", newId), {
-                id: newId,
-                title:'Untitled Note',
-                body:'',
-                id:uuid(),
-                lastModified:{
-                  seconds: Date.now()/1000,
-                  milliseconds: Date.now()
-                }
-            })
-          }
+          })
         }else {setActiveNote(defaultEmailNotes)}
       } catch (error) {
         console.error("error: ", error)
@@ -71,7 +56,6 @@ export default function Notes() {
   const handleNoteOnClick = (index) => {
     let currentNote = emailNotes[index]
     setActiveNote(currentNote)
-    console.log(activeNote)
   }
 
   const handleEditMode = () => {
@@ -80,10 +64,10 @@ export default function Notes() {
 
   const deleteNote = async (e) => {
     if(activeNote.id) {
-      await deleteDoc(doc(db,"users", users.email, "topics", topic, "notecards", activeNote.id))
-      let objInd = cardSet.findIndex((obj) => obj.id === activeNote.id)
+      await deleteDoc(doc(db,"users", users.email, "notebook", activeNote.id))
+      let objInd = emailNotes.findIndex((obj) => obj.id === activeNote.id)
       if(objInd > -1) {
-        cardSet.splice(objInd, 1);
+        emailNotes.splice(objInd, 1);
       }
       setActiveNote({
         question: "",
@@ -106,10 +90,10 @@ export default function Notes() {
         milliseconds: Date.now()
       }
     };
-    emailNotes.unshift(newNote)
-    setActiveNote(newNote)
-    await setDoc(doc(db, "users", users.email, "topics", topic, "notecards", newId), newNote)
-    setAddNoteToggle(!addNoteToggle)
+    await setDoc(doc(db, "users", users.email, "notebook", newId), newNote)
+    // emailNotes.unshift(newNote)
+    // setActiveNote(newNote)
+     setAddNoteToggle(!addNoteToggle)
   }
 
   
