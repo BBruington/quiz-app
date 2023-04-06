@@ -3,18 +3,20 @@ import uuid from "react-uuid"
 import { collection, addDoc, getDocs, setDoc, doc, deleteDoc, updateDoc } from "firebase/firestore"; 
 import { db } from "@/utils/firebase";
 
-export default function TestBuilder() {
+export default function TestBuilder({topic}) {
   const [answerNum, setAnswerNum] = useState(1);
+  const [toggle, setToggle] = useState(false);
+  const [answerValue, setAnswerValue] = useState("");
   const [cardSet, setCardSet] = useState([]);
   const [currentCard, setCurrentCard] = useState({
     question: '',
-    answers: {
-      1:"",
-      2:"",
-      3:"",
-      4:"",
-    },
-    answer: null,
+    answers:[
+      "",
+      "",
+      "",
+      "",
+    ],
+    correctAnswer: null,
     id: null,
   });
 
@@ -33,17 +35,99 @@ export default function TestBuilder() {
       } catch (error) {console.error(error)} 
     }
     getTopics()
-  }, [])
+  }, [toggle])
 
-  const editAnswer = (ansNum, event) => {
+  const switchAnswer = (card, index) => {
+    if(card) {
+      setCurrentCard({
+        question: currentCard.question,
+        answers:[
+          currentCard.answers[0],
+          currentCard.answers[1],
+          currentCard.answers[2],
+          currentCard.answers[3],
+        ],
+        correctAnswer: index + 1,
+        id: currentCard.id
+      })
+    } else {
+      if(index+1 !== answerNum) {
+        setAnswerNum(index+1)
+        setAnswerValue(currentCard.answers[index])
+      }
+    }
+  }
+
+  const editQuestion = (event) => {
     setCurrentCard({
-      question: currentCard.question,
-      answer: currentCard.answer,
+      question: event.target.value,
+      answers:[
+        currentCard.answers[0],
+        currentCard.answers[1],
+        currentCard.answers[2],
+        currentCard.answers[3],
+      ],
+      correctAnswer: currentCard.correctAnswer,
       id: currentCard.id
     })
-    if (ansNum !== 4) {
-      setAnswerNum(answerNum + 1)
-    } else { setAnswerNum(1)}
+  }
+  const editAnswer = (event) => {
+    setAnswerValue(event.target.value)
+    switch (answerNum) {
+      case 1:
+        setCurrentCard({
+          question: currentCard.question,
+          answers:[
+            event.target.value,
+            currentCard.answers[1],
+            currentCard.answers[2],
+            currentCard.answers[3],
+          ],
+          correctAnswer: currentCard.correctAnswer,
+          id: currentCard.id
+        })
+        break;
+      case 2:
+        setCurrentCard({
+          question: currentCard.question,
+          answers:[
+            currentCard.answers[0],
+            event.target.value,
+            currentCard.answers[2],
+            currentCard.answers[3],
+          ],
+          correctAnswer: currentCard.correctAnswer,
+          id: currentCard.id
+        })
+        break;
+      case 3:
+        setCurrentCard({
+          question: currentCard.question,
+          answers:[
+            currentCard.answers[0],
+            currentCard.answers[1],
+            event.target.value,
+            currentCard.answers[3],
+          ],
+          correctAnswer: currentCard.correctAnswer,
+          id: currentCard.id
+        })
+        break;
+      case 4:
+        setCurrentCard({
+          question: currentCard.question,
+          answers:[
+            currentCard.answers[0],
+            currentCard.answers[1],
+            currentCard.answers[2],
+            event.target.value,
+          ],
+          correctAnswer: currentCard.correctAnswer,
+          id: currentCard.id
+        })
+        break;
+    }
+    console.log(currentCard)
   }
 
   return (
@@ -55,17 +139,31 @@ export default function TestBuilder() {
           <textarea 
             value={currentCard.question}
             id="question"
-            // onChange={editQuestion}
+            onChange={editQuestion}
             className="flex mb-4 p-2 w-full h-30vh border border-black" type="text">
           </textarea>
         </div>
         <div className="flex flex-col mt-5 md:mt-10 w-full md:w-4/6 items-center">
-          <span className="text-sm my-5 bg-black text-white py-2 w-full text-center rounded-sm">Insert your answer for: answer {answerNum}</span>
+          <span className="text-sm my-5 bg-black text-white py-2 w-full text-center rounded-sm">Edit your answer for: answer {answerNum}</span>
+          <div className="space-x-7 mb-5">
+            {currentCard.answers.map((card, index) => (
+              <span onClick={() => switchAnswer(false, index)} className="cursor-pointer hover:underline" key={index}>{index + 1}</span> 
+            ))}
+          </div>
+          {/* (currentCard.question[answerNum - 1] */}
           <textarea 
-            onChange={() => editAnswer(answerNum)}
+            onChange={editAnswer}
+            value={answerValue}
             className="flex mb-4 p-2 w-full h-80 border border-black" type="text">
           </textarea>
+          <span className="text-sm my-5 bg-black text-white py-2 w-full text-center rounded-sm">Select the correct answer</span>
+          <div className="space-x-7 mb-5">
+            {currentCard.answers.map((card, index) => (
+              <span onClick={() => switchAnswer(true, index)} className={`cursor-pointer hover:underline text-xl ${index+1 == currentCard.correctAnswer ? 'underline' : ''}`} key={index}>{index + 1}</span> 
+            ))}
+          </div>
         </div>
+        <button className="button">Add a New Question</button>
       </main>
     </>
   )
