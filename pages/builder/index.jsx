@@ -9,6 +9,7 @@ export default function Builder() {
   const [topics, setTopics] = useState([]);
   const [topic, setTopic] = useState("");
   const [selectTopic, setSelectTopic] = useState(false);
+  const [toggle, setToggle] = useState(false);
   const [card, setCard] = useState(false);
   const [quiz, setQuiz] = useState(false);
   const [users, setUsers] = useState(null);  
@@ -40,7 +41,7 @@ export default function Builder() {
       }
     }
     getTopics()
-  }, [selectTopic])
+  }, [selectTopic, toggle])
 
   const selectQuizOrCard = (type) => {
     if (type === "quiz") setQuiz(true)
@@ -58,6 +59,7 @@ export default function Builder() {
       id: uuid()
     })
     setSelectTopic(true);
+    setToggle(!toggle)
   }
 
   const createTopic = (event) => {
@@ -70,13 +72,17 @@ export default function Builder() {
       {selectTopic && !card && !quiz && (
         <div className="flex flex-col items-center justify-center whitespace-nowrap w-full mt-10">
         <span className="text-2xl md:text-3xl font-bold mb-8">Would you like to create/edit a quiz or set of note cards?</span>
-        <div className="flex mb-5">
+        <form className="flex mb-5">
           <input 
           onChange={createTopic} 
           type="text" placeholder="create a new topic"
           className="border-black border-2 border-solid rounded px-1"></input>
-          <button className="ml-4 px-4 py-2 border-2 border-black border-solid rounded hover:bg-gray-200" onClick={selectTopicButtonHandler}>Create Topic</button>
-        </div>
+          <button 
+            type="submit" 
+            className="ml-4 px-4 py-2 border-2 border-black border-solid rounded hover:bg-gray-200" 
+            onClick={selectTopicButtonHandler}>Create Topic
+          </button>
+        </form>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 m-10 w-4/6 md:w-full">
             <div className="w-full">
               <button className="flex py-10 p-5 w-full justify-center text-center bg-gray-200 hover:bg-gray-300 rounded-sm" onClick={() => selectQuizOrCard("card")}>Note Cards</button> 

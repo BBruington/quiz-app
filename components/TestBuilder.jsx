@@ -163,6 +163,7 @@ export default function TestBuilder({topic}) {
             ))}
           </div>
         </div>
+        <button className="button">Confirm Changes</button>
         <button className="button">Add a New Question</button>
       </main>
     </>
