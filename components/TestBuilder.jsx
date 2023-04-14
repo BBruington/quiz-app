@@ -163,8 +163,8 @@ export default function TestBuilder({topic}) {
             ))}
           </div>
         </div>
-        <button className="button">Confirm Changes</button>
-        <button className="button">Add a New Question</button>
+        <button className="button md:w-4/6">Confirm Changes</button>
+        <button className="button md:w-4/6">Add a New Question</button>
       </main>
     </>
   )

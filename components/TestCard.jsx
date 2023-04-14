@@ -38,13 +38,11 @@ export default function TestCard() {
           <div className="flex items-center justify-center bg-gray-200 h-80 my-20 w-10/12 mx-auto">This is where the question would be asked?</div>      
           
           {/* answers: */}
-          <div className="flex flex-col md:flex-row items-center justify-around my-5">
-            <button className="testButton" onClick={() => answer(1)}>answer 1</button>
-            <button className="testButton mt-5 md:mt-0" onClick={() => answer(2)}>answer 2</button>
-          </div>
-          <div className="flex flex-col md:flex-row items-center justify-around my-5">
-            <button className="testButton" onClick={() => answer(3)}>answer 3</button>
-            <button className="testButton mt-5 md:mt-0" onClick={() => answer(4)}>answer 4</button>
+          <div className="grid grid-cols-1 md:grid-cols-2 my-5 w-full">
+              <button className="testButton" onClick={() => answer(1)}>answer 1</button>
+              <button className="testButton" onClick={() => answer(2)}>answer 2</button>
+              <button className="testButton" onClick={() => answer(3)}>answer 3</button>
+              <button className="testButton" onClick={() => answer(4)}>answer 4</button>
           </div>
         </>
       )}

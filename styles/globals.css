@@ -6,8 +6,11 @@
   .button {
     @apply my-5  bg-black text-white py-3 px-5 rounded-md hover:bg-gray-700 whitespace-nowrap w-full;
   }
+  .buildButton {
+    @apply my-5  bg-black text-white py-3 px-5 rounded-md hover:bg-gray-700 whitespace-nowrap w-full;
+  }
   .testButton {
-    @apply h-28 w-4/6 md:w-5/12 bg-gray-200 rounded-xl text-sm hover:bg-gray-300
+    @apply h-28 w-11/12 m-5 bg-gray-200 rounded-xl text-sm hover:bg-gray-300
   }
   .nav {
     @apply pt-3 mb-5 text-xs md:text-lg font-bold hover:underline cursor-pointer text-center
