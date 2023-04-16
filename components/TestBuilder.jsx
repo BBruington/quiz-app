@@ -127,7 +127,35 @@ export default function TestBuilder({topic}) {
         })
         break;
     }
-    console.log(currentCard)
+  }
+
+  const addTestCard = async () => {
+    e.preventDefault();
+    let newId;
+    newId = uuid();
+    if(currentCard.answer.length > 0 && currentCard.question.length > 0) {
+      await setDoc(doc(db, "users", users.email, "topics", topic, "tests", newId), {
+        answers:[
+          currentCard.answers[0],
+          currentCard.answers[1],
+          currentCard.answers[2],
+          currentCard.answers[3],
+          
+        ],
+        id: newId,
+        correctAnswer: currentCard.correctAnswer,
+        lastModified:{
+          seconds: Date.now()/1000,
+          milliseconds: Date.now()
+        }
+      })
+      setCurrentCard({
+        question: "",
+        answer: "",
+        id: null
+      })
+      setCardTrigger(!cardTrigger)
+    } else { alert("Please add a question and answer to the notecard")}
   }
 
   return (
