@@ -1,0 +1,23 @@
+{
+	"folders": [
+		{
+			"path": "../../bennxworkspace"
+		},
+		{
+			"path": "../../sanity-build"
+		},
+		{
+			"path": "../../fbclone"
+		},
+		{
+			"path": ".."
+		},
+		{
+			"path": "../../shopping-app-amz"
+		},
+		{
+			"path": "../../leetCode"
+		}
+	],
+	"settings": {}
+}

@@ -23,7 +23,7 @@ export default function TestBuilder({topic}) {
   useEffect(()=> {
     const getTopics = async () => {
       try {
-        await getDocs(collection(db, "topics", topic, "quiz")).then((querySnapshot) => {  
+        await getDocs(collection(db, "users", users.email, "topics", topic, "quiz")).then((querySnapshot) => {  
           let newData = querySnapshot.docs.map((doc) => ({...doc.data(), id:doc.id }));
           newData = newData.sort( (a,b) => {
             return a.lastModified.milliseconds - b.lastModified.milliseconds
@@ -133,29 +133,33 @@ export default function TestBuilder({topic}) {
     e.preventDefault();
     let newId;
     newId = uuid();
-    if(currentCard.answer.length > 0 && currentCard.question.length > 0) {
-      await setDoc(doc(db, "users", users.email, "topics", topic, "tests", newId), {
-        answers:[
-          currentCard.answers[0],
-          currentCard.answers[1],
-          currentCard.answers[2],
-          currentCard.answers[3],
-          
-        ],
-        id: newId,
-        correctAnswer: currentCard.correctAnswer,
-        lastModified:{
-          seconds: Date.now()/1000,
-          milliseconds: Date.now()
-        }
-      })
-      setCurrentCard({
-        question: "",
-        answer: "",
-        id: null
-      })
-      setCardTrigger(!cardTrigger)
-    } else { alert("Please add a question and answer to the notecard")}
+    await setDoc(doc(db, "users", users.email, "topics", topic, "quiz", newId), {
+      answers:[
+        currentCard.answers[0],
+        currentCard.answers[1],
+        currentCard.answers[2],
+        currentCard.answers[3],
+        
+      ],
+      id: newId,
+      correctAnswer: currentCard.correctAnswer,
+      lastModified:{
+        seconds: Date.now()/1000,
+        milliseconds: Date.now()
+      }
+    })
+    setCurrentCard({
+      question: '',
+      answers:[
+        "",
+        "",
+        "",
+        "",
+      ],
+      correctAnswer: null,
+      id: null,
+    })
+    setCardTrigger(!cardTrigger)
   }
 
   return (
@@ -191,7 +195,7 @@ export default function TestBuilder({topic}) {
             ))}
           </div>
         </div>
-        <button className="button md:w-4/6">Confirm Changes</button>
+        <button onClick={addTestCard} className="button md:w-4/6">Confirm Changes</button>
         <button className="button md:w-4/6">Add a New Question</button>
       </main>
     </>
