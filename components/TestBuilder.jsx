@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import uuid from "react-uuid"
 import { collection, addDoc, getDocs, setDoc, doc, deleteDoc, updateDoc } from "firebase/firestore"; 
-import { db } from "@/utils/firebase";
+import { db, getCurrentUser } from "@/utils/firebase";
 
 export default function TestBuilder({topic}) {
+  const [users, setUsers] = useState(null)
   const [answerNum, setAnswerNum] = useState(1);
   const [toggle, setToggle] = useState(false);
   const [answerValue, setAnswerValue] = useState("");
@@ -23,6 +24,10 @@ export default function TestBuilder({topic}) {
   useEffect(()=> {
     const getTopics = async () => {
       try {
+        const currentUser = await getCurrentUser();
+        if(users === null && currentUser !== null ) {
+            setUsers(currentUser)
+        }
         await getDocs(collection(db, "users", users.email, "topics", topic, "quiz")).then((querySnapshot) => {  
           let newData = querySnapshot.docs.map((doc) => ({...doc.data(), id:doc.id }));
           newData = newData.sort( (a,b) => {
@@ -130,10 +135,10 @@ export default function TestBuilder({topic}) {
   }
 
   const addTestCard = async () => {
-    e.preventDefault();
     let newId;
     newId = uuid();
     await setDoc(doc(db, "users", users.email, "topics", topic, "quiz", newId), {
+      question:currentCard.question,
       answers:[
         currentCard.answers[0],
         currentCard.answers[1],
@@ -159,7 +164,9 @@ export default function TestBuilder({topic}) {
       correctAnswer: null,
       id: null,
     })
-    setCardTrigger(!cardTrigger)
+    setToggle(!toggle)
+    setAnswerNum(1)
+    setAnswerValue("")
   }
 
   return (
