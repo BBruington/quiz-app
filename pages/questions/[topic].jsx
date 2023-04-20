@@ -16,7 +16,7 @@ export default function Topic({data}) {
 export async function getStaticProps(staticProps) {
   const params = staticProps.params;
   let notes;
-  const data = await getDocs(collection(db,"users", users.email, "topics", params.topic, "notecards"))
+  const data = await getDocs(collection(db,"users", "psychological_chemist@hotmail.com", "topics", params.topic, "notecards"))
   .then((querySnapshot) => {  
     let newData = querySnapshot.docs.map((doc) => ({...doc.data(), id:doc.id }));
     newData = newData.sort( (a,b) => {
@@ -31,12 +31,12 @@ export async function getStaticProps(staticProps) {
 
 export async function getStaticPaths() {  
   let data;
-  await getDocs(collection(db, "users", users.email, "topics")).then((querySnapshot) => {
+  await getDocs(collection(db, "users", "psychological_chemist@hotmail.com", "topics")).then((querySnapshot) => {
     const newData = querySnapshot.docs.map((doc) => ({...doc.data(), id:doc.id }));
       data = newData                
-    }) 
+  }) 
 
-  const paths = data.map( (s) => {
+  const paths = data?.map( (s) => {
     return {
       params: 
       { 
