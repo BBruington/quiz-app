@@ -3,6 +3,7 @@ import {getDocs, collection} from "firebase/firestore";
 import { db, getCurrentUser } from "@/utils/firebase";
 
 export default function Topic({data}) {
+
   return (
     <div className="flex items-center justify-center">
       <QuizCard 
@@ -15,10 +16,7 @@ export default function Topic({data}) {
 export async function getStaticProps(staticProps) {
   const params = staticProps.params;
   let notes;
-  const currentUser = await getCurrentUser();
-  console.log(currentUser)
-  if(!currentUser) return {props: {data: {}}}
-  const data = await getDocs(collection(db,"users", currentUser.email, "topics", params.topic, "notecards"))
+  const data = await getDocs(collection(db,"users", users.email, "topics", params.topic, "notecards"))
   .then((querySnapshot) => {  
     let newData = querySnapshot.docs.map((doc) => ({...doc.data(), id:doc.id }));
     newData = newData.sort( (a,b) => {
@@ -33,9 +31,7 @@ export async function getStaticProps(staticProps) {
 
 export async function getStaticPaths() {  
   let data;
-  const currentUser = await getCurrentUser();
-  console.log(currentUser)
-  await getDocs(collection(db, "users", currentUser.email, "topics")).then((querySnapshot) => {
+  await getDocs(collection(db, "users", users.email, "topics")).then((querySnapshot) => {
     const newData = querySnapshot.docs.map((doc) => ({...doc.data(), id:doc.id }));
       data = newData                
     }) 
