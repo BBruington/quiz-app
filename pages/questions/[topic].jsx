@@ -17,18 +17,17 @@ export default function Topic({data}) {
 
 export async function getStaticProps(staticProps) {
   const params = staticProps.params;
-  let notes;
-  const data = await getDocs(collection(db,"users", "psychological_chemist@hotmail.com", "topics", params.topic, "notecards"))
-  .then((querySnapshot) => {  
-    let newData = querySnapshot.docs.map((doc) => ({...doc.data(), id:doc.id }));
-    newData = newData.sort( (a,b) => {
-      return a.lastModified.milliseconds - b.lastModified.milliseconds
-    })
-    if(newData) {
-      notes = newData; 
-    }
-  }) 
-  return { props: { data: notes ? notes : {}, }, };
+  try {
+    const data = await getDocs(collection(db,"users", "psychological_chemist@hotmail.com", "topics", params.topic, "notecards"));
+      const newData = data.docs.map((doc) => ({...doc.data(), id:doc.id }));
+      newData.sort( (a,b) => {
+        return a.lastModified.milliseconds - b.lastModified.milliseconds
+      })
+        return { props: { data: newData ? newData : {}, }, };
+
+  } catch(error) {
+    console.error(error);
+  }
 }
 
 export async function getStaticPaths() {  
