@@ -6,10 +6,10 @@ import {AppWrapper} from "../context/context";
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
-    <AppWrapper>
-      <Nav />
-      <Component {...pageProps} />
-    </AppWrapper>
+      <AppWrapper>
+        <Nav />
+        <Component {...pageProps} />
+      </AppWrapper>
     </>
   )
 }

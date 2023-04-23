@@ -5,11 +5,13 @@ import { db, getCurrentUser } from "@/utils/firebase";
 export default function Topic({data}) {
 
   return (
-    <div className="flex items-center justify-center">
-      <QuizCard 
-        topic={data}
-      />
-    </div>
+    <>
+      <div className="flex items-center justify-center mt-40">
+        <QuizCard 
+          topic={data}
+        />
+      </div>
+    </>
   )
 }
 
@@ -20,7 +22,7 @@ export async function getStaticProps(staticProps) {
   .then((querySnapshot) => {  
     let newData = querySnapshot.docs.map((doc) => ({...doc.data(), id:doc.id }));
     newData = newData.sort( (a,b) => {
-      return b.lastModified.milliseconds - a.lastModified.milliseconds
+      return a.lastModified.milliseconds - b.lastModified.milliseconds
     })
     if(newData) {
       notes = newData; 

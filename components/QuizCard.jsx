@@ -54,7 +54,7 @@ export default function QuizCard({topic}) {
   
   return (
     <>
-      <div className="h-80 flex flex-col justify-center mt-40 max-w-3xl">
+      <div className="h-40 flex flex-col justify-center max-w-3xl">
         {currentQuestion && currentQuestion.map( (currentQuestion) => (
           <div className="flex flex-col" key={currentQuestion.number}>
             <div className="flex justify-center mt-40 pb-10 text-lg font-bold">Question {questionNum + 1}</div>
