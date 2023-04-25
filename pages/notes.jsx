@@ -32,7 +32,6 @@ export default function Notes() {
         const currentUser = await getCurrentUser(); 
         if(currentUser) {
           setUsers(currentUser);
-          console.log(currentUser.email)
           await getDocs(collection(db, "users", currentUser.email, "notebook")).then((querySnapshot) => {
             let newData = querySnapshot.docs.map((doc) => ({...doc.data(), id:doc.id }));
             newData = newData.sort( (a,b) => {
@@ -74,6 +73,27 @@ export default function Notes() {
       })
     }
   }
+  const saveNote = async (updatedNote) => {
+    console.log(updatedNote)
+    if(activeNote.id) {
+      if(emailNotes) {
+        const updatedNotesArray = {
+          id: activeNote.id,
+          body: activeNote.body,
+          title: activeNote.title,
+          lastModified:{
+            seconds: activeNote.lastModified.seconds,
+            milliseconds: activeNote.lastModified.milliseconds
+          }
+        }
+        const noteDoc = await doc(db,"users", users.email, "notebook", activeNote.id)
+        await updateDoc(noteDoc, updatedNotesArray);
+
+      setActiveNote(updatedNotesArray)
+      }
+    }
+    setAddNoteToggle(!addNoteToggle)
+  }
 
   const addNote = async (e) => {
     e.preventDefault();
@@ -108,21 +128,14 @@ export default function Notes() {
         }
       }
       setActiveNote(updatedNotesArray)
-      const noteDoc = doc(db,"users", users.email, "notebook", activeNote.id)
-      await updateDoc(noteDoc, updatedNotesArray)
     }
     setAddNoteToggle(!addNoteToggle)
-  }
-
-  const getActiveNote = () => {
-      const activeNoteListener = emailNotes[0].notes.find((note) => note.id === activeNote);
-      return activeNoteListener
   }
 
   return (
     <>
       <div className="flex justify-start">
-        <div className="w-2/6 overflow-auto border-r-2 border-r-gray-200 border-b-2 h-[90vh]">
+        <div className="w-2/6 overflow-auto border-r-2 border-r-gray-200 border-b-2 border-t-2 h-[90vh]">
           <div className="flex justify-between p-4">
             <h1 className="text-xl md:text-3xl font-bold items-center text tracking-tight text-gray-900 mt-1 md:m-0">Notes</h1>
             <div className="flex flex-cols md:flex-row  ml-2">

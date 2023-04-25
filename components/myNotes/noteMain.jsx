@@ -17,7 +17,7 @@ export default function NoteMain(props) {
 
   return (
     <>
-      <div className="w-4/6 h-[90vh] border-b-2">
+      <div className="w-4/6 h-[90vh] border-b-2 border-t-2">
         { 
         editMode && activeNote && (
         <>
