@@ -6,7 +6,7 @@ export default function Topic({data}) {
 
   return (
     <>
-      <div className="flex items-center justify-center mt-40">
+      <div className="flex items-center justify-center">
         <QuizCard 
           topic={data}
         />
@@ -18,7 +18,7 @@ export default function Topic({data}) {
 export async function getStaticProps(staticProps) {
   const params = staticProps.params;
   try {
-    const data = await getDocs(collection(db,"users", "psychological_chemist@hotmail.com", "topics", params.topic, "notecards"));
+    const data = await getDocs(collection(db,"users", "psychological_chemist@hotmail.com", "topics", params.topic, "notecards"))
       const newData = data.docs.map((doc) => ({...doc.data(), id:doc.id }));
       newData.sort( (a,b) => {
         return a.lastModified.milliseconds - b.lastModified.milliseconds

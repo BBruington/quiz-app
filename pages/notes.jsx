@@ -122,7 +122,7 @@ export default function Notes() {
   return (
     <>
       <div className="flex justify-start">
-        <div className="w-2/6 overflow-auto border-r-2 border-r-gray-200 border-b-2 h-90v">
+        <div className="w-2/6 overflow-auto border-r-2 border-r-gray-200 border-b-2 h-[90vh]">
           <div className="flex justify-between p-4">
             <h1 className="text-xl md:text-3xl font-bold items-center text tracking-tight text-gray-900 mt-1 md:m-0">Notes</h1>
             <div className="flex flex-cols md:flex-row  ml-2">
@@ -138,16 +138,17 @@ export default function Notes() {
               <div key={note.id} className="p-4 cursor-pointer hover:bg-gray-200" onClick={() => handleNoteOnClick(index)}>
                 <div className="flex justify-between items-center">
                   <div>
-                    <strong>{note.title}</strong> 
-                    <ReactMarkdown className="">{note.body && note.body.substr(0, 50) + '...'}</ReactMarkdown>
+                    <strong className="text-xs md:text-md leading-3">{note.title}</strong> 
+                    <ReactMarkdown className="text-xs md:text-sm ">{note.body && note.body.substr(0, 25) + '...'}</ReactMarkdown>
 
-                    <small className="font-light block">last modified: {new Date(note.lastModified.seconds * 1000).toLocaleDateString("en-US", {
+                    <small className="font-light block text-xs">last modified: {new Date(note.lastModified.seconds * 1000).toLocaleDateString("en-US", {
                       hour: "2-digit",
                       minute: "2-digit",
                     })}
                     </small>
                   </div>
-                  <div className="mt-2 items-center ">
+                  <div className="mt-2 ml-1 flex flex-col space-y-4 md:space-y-0 md:flex-row items-center justify-center">
+                    <button onClick={() => saveNote(note.id)} className="text-green-700 hover:text-green-500 md:mr-2 font-bold text-sm sm:text-base">Save</button>
                     <button onClick={() => deleteNote(note.id)} className="text-orange-700 hover:text-orange-500 font-bold text-sm sm:text-base">Delete</button>
                   </div>
                 </div>

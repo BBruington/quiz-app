@@ -6,7 +6,6 @@ export default function NoteSideBar(props) {
   const handleNoteOnClick = (index) => {
     let currentNote = emailNotes[index]
     setActiveNote(currentNote)
-    console.log(activeNote)
   }
 
   const handleEditMode = () => {
@@ -39,14 +38,14 @@ export default function NoteSideBar(props) {
                   })}
                   </small>
                 </div>
-                  <div className="mt-2">
-                    <button onClick={() => deleteNote(note.id)} className="text-orange-700 hover:text-orange-500 font-bold">Delete</button>
-                  </div>
+                <div className="mt-2">
+                  <button onClick={() => saveNote(note.id)} className="text-blue-700 hover:text-blue-500 font-bold">Save</button>
+                  <button onClick={() => deleteNote(note.id)} className="text-orange-700 hover:text-orange-500 font-bold">Delete</button>
+                </div>
               </div>
             </div>
           )))}
         </div>
-
       </div>
     </>
   )

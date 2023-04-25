@@ -17,19 +17,19 @@ export default function NoteMain(props) {
 
   return (
     <>
-      <div className="w-4/6 h-90v border-b-2">
+      <div className="w-4/6 h-[90vh] border-b-2">
         { 
         editMode && activeNote && (
         <>
-          <div className="h-40v m-4">
+          <div className="h-[40vh] m-4">
             
             <input className="flex block mb-4 p-2 w-full h-8" type="text" placeholder="Title" id="title" value={activeNote.title} onChange={(e)=>editField("title", e.target.value)} autoFocus />
 
-            <textarea className="flex block mb-4 p-2 w-full h-30v" id="body" value={activeNote.body} onChange={(e)=>editField("body", e.target.value)} placeholder="Write your note here"/>
+            <textarea className="flex block mb-4 p-2 w-full h-[30vh]" id="body" value={activeNote.body} onChange={(e)=>editField("body", e.target.value)} placeholder="Write your note here"/>
 
           </div>
 
-          <div className="overflow-auto m-4 bg-gray-100 h-40v">
+          <div className="overflow-auto m-4 bg-gray-100 h-[40vh]">
 
             <h1 className="p-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-2xl lg:text-3xl m-0">{activeNote.title}</h1>
 
@@ -41,7 +41,7 @@ export default function NoteMain(props) {
         {
           !activeNote && (
         <>
-          <div className="m-4 mt-7 bg-gray-100 h-80v">
+          <div className="m-4 mt-7 bg-gray-100 h-[80vh]">
 
           <h1 className="p-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-2xl lg:text-3xl m-0">Click on an existing note or add a new one</h1>
 
@@ -53,7 +53,7 @@ export default function NoteMain(props) {
         {
         !editMode && activeNote && (
         
-        <div className="m-4 mt-7 bg-gray-100 h-80v">
+        <div className="m-4 mt-7 bg-gray-100 h-[80vh]">
 
           <h1 className="p-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-2xl lg:text-3xl m-0">{activeNote.title}</h1>
 
