@@ -124,6 +124,8 @@ export default function CardBuilder({topic}) {
       id: currentCard.id
   })}
 
+  
+
   return (
     <div className="w-full">
       <div className="flex flex-col w-full md:flex-row items-center">

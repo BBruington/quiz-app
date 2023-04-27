@@ -4,7 +4,6 @@ import uuid from 'react-uuid';
 import { useState, useEffect } from 'react';
 import { addDoc, updateDoc, doc, setDoc, getDocs, collection, deleteDoc } from 'firebase/firestore';
 import { getCurrentUser, db } from "../utils/firebase";
-import useSWR from 'swr';
 
 const fetcher = () => fetch(url).then(res => res.json())
 export default function Notes() {
@@ -14,11 +13,11 @@ export default function Notes() {
   const [activeNote, setActiveNote] = useState({});
   const [addNoteToggle, setAddNoteToggle] = useState(false);
   const [editMode, setEditMode] = useState(false);
-  //const { data, error, isLoading } = useSWR('/api/getUserNotesData', fetcher);
 
   const defaultEmailNotes = {
     title:'Remember to sign in to save your notes',
     body:'',
+    changesNeeded:false,
     id:uuid(),
     lastModified:{
       seconds: Date.now()/1000,
@@ -53,6 +52,7 @@ export default function Notes() {
   const handleNoteOnClick = (index) => {
     let currentNote = emailNotes[index]
     setActiveNote(currentNote)
+    console.log(activeNote)
   }
 
   const handleEditMode = () => {
@@ -89,7 +89,16 @@ export default function Notes() {
         const noteDoc = await doc(db,"users", users.email, "notebook", activeNote.id)
         await updateDoc(noteDoc, updatedNotesArray);
 
-      setActiveNote(updatedNotesArray)
+      setActiveNote({
+        id: activeNote.id,
+        body: activeNote.body,
+        title: activeNote.title,
+        changesNeeded:false,
+        lastModified:{
+          seconds: activeNote.lastModified.seconds,
+          milliseconds: activeNote.lastModified.milliseconds
+        }
+      })
       }
     }
     setAddNoteToggle(!addNoteToggle)
@@ -109,8 +118,26 @@ export default function Notes() {
       }
     };
     await setDoc(doc(db, "users", users.email, "notebook", newId), newNote)
-    emailNotes.unshift(newNote)
-    setActiveNote(newNote)
+    emailNotes.unshift({
+      title: "Untitled Note",
+      body: "",
+      id: newId,
+      changesNeeded:false,
+      lastModified: {
+        seconds: Date.now()/1000,
+        milliseconds: Date.now()
+      }
+    })
+    setActiveNote({
+      title: "Untitled Note",
+      body: "",
+      id: newId,
+      changesNeeded:false,
+      lastModified: {
+        seconds: Date.now()/1000,
+        milliseconds: Date.now()
+      }
+    })
     setAddNoteToggle(!addNoteToggle)
   }
 
@@ -122,12 +149,15 @@ export default function Notes() {
         id: updatedNote.id,
         body: updatedNote.body,
         title: updatedNote.title,
+        changesNeeded:true,
         lastModified:{
           seconds: updatedNote.lastModified.seconds,
           milliseconds: updatedNote.lastModified.milliseconds
         }
       }
       setActiveNote(updatedNotesArray)
+      console.log(activeNote)
+      console.log(emailNotes)
     }
     setAddNoteToggle(!addNoteToggle)
   }
@@ -136,13 +166,11 @@ export default function Notes() {
     <>
       <div className="flex justify-start">
         <div className="w-2/6 overflow-auto border-r-2 border-r-gray-200 border-b-2 border-t-2 h-[90vh]">
-          <div className="flex justify-between p-4">
-            <h1 className="text-xl md:text-3xl font-bold items-center text tracking-tight text-gray-900 mt-1 md:m-0">Notes</h1>
-            <div className="flex flex-cols md:flex-row  ml-2">
+            <h1 className="flex text-xl md:text-3xl font-bold justify-center items-center text tracking-tight text-gray-900 mt-1 md:m-0">Notes</h1>
+            <div className="flex flex-cols justify-between p-4 md:flex-row ml-2">
               <button onClick={handleEditMode} className="text-green-700 hover:text-green-500 font-bold lg:mr-5 text-center text-sm sm:text-base">Edit Note</button>
-              <button onClick={addNote} className="text-teal-600 hover:text-teal-400 font-bold ml-1 text-center text-sm sm:text-base">Add Note</button>
+              <button onClick={addNote} className="text-teal-600 hover:text-teal-400 font-bold ml-2 text-center text-sm sm:text-base">Add Note</button>
             </div>
-          </div>
           <div className="app-sidebar-notes">
 
             {/* clickable notes */}
@@ -161,7 +189,11 @@ export default function Notes() {
                     </small>
                   </div>
                   <div className="mt-2 ml-1 flex flex-col space-y-4 md:space-y-0 md:flex-row items-center justify-center">
-                    <button onClick={() => saveNote(note.id)} className="text-green-700 hover:text-green-500 md:mr-2 font-bold text-sm sm:text-base">Save</button>
+                    <button 
+                      onClick={() => saveNote(note.id)} className={`text-green-700 hover:text-green-500 md:mr-2 font-bold text-sm sm:text-base 
+                      ${!note.changesNeeded && 'cursor-not-allowed hover:text-green-200 text-green-200'}`}
+                      disabled={!note.changesNeeded}
+                    >Save</button>
                     <button onClick={() => deleteNote(note.id)} className="text-orange-700 hover:text-orange-500 font-bold text-sm sm:text-base">Delete</button>
                   </div>
                 </div>

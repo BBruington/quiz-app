@@ -26,9 +26,9 @@ export default function TestBuilder({topic}) {
       try {
         const currentUser = await getCurrentUser();
         if(users === null && currentUser !== null ) {
-            setUsers(currentUser)
+          setUsers(currentUser)
         }
-        await getDocs(collection(db, "users", users.email, "topics", topic, "quiz")).then((querySnapshot) => {  
+        await getDocs(collection(db, "users", currentUser.email, "topics", topic, "quiz")).then((querySnapshot) => {  
           let newData = querySnapshot.docs.map((doc) => ({...doc.data(), id:doc.id }));
           newData = newData.sort( (a,b) => {
             return a.lastModified.milliseconds - b.lastModified.milliseconds
@@ -134,7 +134,7 @@ export default function TestBuilder({topic}) {
     }
   }
 
-  const addTestCard = async () => {
+  const confirmTestCard = async () => {
     let newId;
     newId = uuid();
     await setDoc(doc(db, "users", users.email, "topics", topic, "quiz", newId), {
@@ -169,8 +169,59 @@ export default function TestBuilder({topic}) {
     setAnswerValue("")
   }
 
+  const selectSpecificNote = async (index) => {
+    let card = cardSet[index]
+    setCurrentCard(card)
+    setAnswerNum(1)
+    setAnswerValue(cardSet[index].answers[0])
+  }
+
+  const addNewQuizCard = async (e) => {
+    e.preventDefault();
+    let newId;
+    newId = uuid();
+    await setDoc(doc(db, "users", users.email, "topics", topic, "quiz", newId), {
+      question: '',
+      answers:[
+        "",
+        "",
+        "",
+        "",
+      ],
+      correctAnswer: null,
+      id: newId,
+      lastModified:{
+        seconds: Date.now()/1000,
+        milliseconds: Date.now()
+      }
+    })
+    setCurrentCard({
+      question: "",
+      answer: "",
+      answers:[
+        "",
+        "",
+        "",
+        "",
+      ],
+      correctAnswer: null,
+      id: newId,
+    })
+    setCardTrigger(!toggle)
+  }
+
   return (
     <>
+  <div className="flex flex-col items-center justify-center">
+    <span className="text-sm mb-5 bg-black text-white py-2 w-full text-center rounded-sm md:w-4/6">The questions in this test:</span>
+    <div className="flex items-center justify-center">
+      { cardSet.length > 0  && cardSet.map((card, index) => (
+        <div className="flex items-center" key={card.id}>
+          <button onClick={() => selectSpecificNote(index)} className="flex mr-2 text-center">{index + 1}</button>
+        </div>
+      ))}
+    </div>
+  </div>
       {/* Note Card Builder */}
       <main className="flex flex-col items-center w-full">
         <div className="flex flex-col mt-10 w-full md:w-4/6 items-center">
@@ -202,8 +253,8 @@ export default function TestBuilder({topic}) {
             ))}
           </div>
         </div>
-        <button onClick={addTestCard} className="button md:w-4/6">Confirm Changes</button>
-        <button className="button md:w-4/6">Add a New Question</button>
+        <button onClick={confirmTestCard} className="button md:w-4/6">Confirm Changes</button>
+        <button onClick={addNewQuizCard} className="button md:w-4/6">Add a New Question</button>
       </main>
     </>
   )
