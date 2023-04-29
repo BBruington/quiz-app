@@ -19,11 +19,11 @@ export async function getStaticProps(staticProps) {
   const params = staticProps.params;
   try {
     const data = await getDocs(collection(db,"users", "psychological_chemist@hotmail.com", "topics", params.topic, "notecards"))
-      const newData = data.docs.map((doc) => ({...doc.data(), id:doc.id }));
-      newData.sort( (a,b) => {
-        return a.lastModified.milliseconds - b.lastModified.milliseconds
-      })
-        return { props: { data: newData ? newData : {}, }, };
+    const newData = data.docs.map((doc) => ({...doc.data(), id:doc.id }));
+    newData.sort( (a,b) => {
+      return a.lastModified.milliseconds - b.lastModified.milliseconds
+    })
+    return { props: { data: newData ? newData : {}, }, };
 
   } catch(error) {
     console.error(error);

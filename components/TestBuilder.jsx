@@ -23,21 +23,21 @@ export default function TestBuilder({topic}) {
 
   useEffect(()=> {
     const getTopics = async () => {
-      try {
-        const currentUser = await getCurrentUser();
-        if(users === null && currentUser !== null ) {
-          setUsers(currentUser)
+    try {
+      const currentUser = await getCurrentUser();
+      if(users === null && currentUser !== null ) {
+        setUsers(currentUser)
+      }
+      await getDocs(collection(db, "users", currentUser.email, "topics", topic, "quiz")).then((querySnapshot) => {  
+        let newData = querySnapshot.docs.map((doc) => ({...doc.data(), id:doc.id }));
+        newData = newData.sort( (a,b) => {
+          return a.lastModified.milliseconds - b.lastModified.milliseconds
+        })
+        if(newData) {
+          setCardSet(newData); 
         }
-        await getDocs(collection(db, "users", currentUser.email, "topics", topic, "quiz")).then((querySnapshot) => {  
-          let newData = querySnapshot.docs.map((doc) => ({...doc.data(), id:doc.id }));
-          newData = newData.sort( (a,b) => {
-            return a.lastModified.milliseconds - b.lastModified.milliseconds
-          })
-          if(newData) {
-            setCardSet(newData); 
-          }
-        }) 
-      } catch (error) {console.error(error)} 
+      }) 
+    } catch (error) {console.error(error)} 
     }
     getTopics()
   }, [toggle])
