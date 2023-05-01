@@ -1,6 +1,4 @@
 import { useState, useEffect } from "react";
-import {getDocs, collection} from "firebase/firestore"; 
-import { db, getCurrentUser} from "@/utils/firebase";
 
 export default function TestCard({topic}) {
 
@@ -9,7 +7,7 @@ export default function TestCard({topic}) {
   const [score, setScore] = useState(0)
   const [toggle, setToggle] = useState(false);
   const [cardSet, setCardSet] = useState(topic);
-  const [currentTestQuestions, setCurrentTestQuestions] = useState({
+  const [currentTestQuestion, setCurrentTestQuestion] = useState({
     question: "",
     answers:[
       "",
@@ -26,17 +24,13 @@ export default function TestCard({topic}) {
       const newFilteredQuestions = cardSet.filter((question, index) => {
         return index === questionNum
       });
-      if(newFilteredQuestions !== 0){
-        setCurrentTestQuestions(newFilteredQuestions); 
-      } else {
-        setQuestionNum(0);
-      }
+      setCurrentTestQuestion(newFilteredQuestions[[0]]); 
     }
   }, [toggle, questionNum])
 
   const answer = (guess) => {
-    if(currentTestQuestions.correctAnswer === guess) setScore(score + 1);
-    if(questionNum < cardSet.length){
+    if(currentTestQuestion.correctAnswer === guess) setScore(score + 1);
+    if(questionNum < cardSet.length - 1){
       setQuestionNum(questionNum + 1);
     } else{
       setEnd(true);
@@ -51,10 +45,10 @@ export default function TestCard({topic}) {
       )  :  (
         <>
           <div className="flex justify-between mt-10 mx-10">
-            <div>Your Current Score: {score}</div>
+            <div>Your Current Score: {score}</div> 
             <div>Question {questionNum + 1} of {cardSet.length}</div>
           </div>
-          <div className="flex items-center justify-center bg-gray-200 h-80 my-20 w-10/12 mx-auto">This is where the question would be asked?</div>      
+          <div className="flex items-center justify-center bg-gray-200 h-80 my-20 w-10/12 mx-auto">{currentTestQuestion.question}</div>     
           
           {/* answers: */}
           <div className="grid grid-cols-1 md:grid-cols-2 my-5 w-full">

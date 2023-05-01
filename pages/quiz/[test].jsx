@@ -3,8 +3,6 @@ import {getDocs, collection} from "firebase/firestore";
 import { db, getCurrentUser } from "@/utils/firebase"; 
 
 export default function Topic({data}) {
-
-  console.log(data)
   return (
       <TestCard 
         topic={data}
