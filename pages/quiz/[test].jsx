@@ -4,12 +4,11 @@ import { db, getCurrentUser } from "@/utils/firebase";
 
 export default function Topic({data}) {
 
+  console.log(data)
   return (
-    <div className="flex items-center justify-center">
       <TestCard 
         topic={data}
       />
-    </div>
   )
 }
 
