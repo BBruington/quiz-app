@@ -52,10 +52,10 @@ export default function TestCard({topic}) {
           
           {/* answers: */}
           <div className="grid grid-cols-1 md:grid-cols-2 my-5 w-full">
-              <button className="testButton" onClick={() => answer(1)}>answer 1</button>
-              <button className="testButton" onClick={() => answer(2)}>answer 2</button>
-              <button className="testButton" onClick={() => answer(3)}>answer 3</button>
-              <button className="testButton" onClick={() => answer(4)}>answer 4</button>
+              <button className="testButton" onClick={() => answer(1)}>{currentTestQuestion.answers[0]}</button>
+              <button className="testButton" onClick={() => answer(2)}>{currentTestQuestion.answers[1]}</button>
+              <button className="testButton" onClick={() => answer(3)}>{currentTestQuestion.answers[2]}</button>
+              <button className="testButton" onClick={() => answer(4)}>{currentTestQuestion.answers[3]}</button>
           </div>
         </>
       )}
