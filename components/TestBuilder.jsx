@@ -268,7 +268,11 @@ export default function TestBuilder({topic}) {
             ))}
           </div>
         </div>
-        <button onClick={confirmTestCard} className="button md:w-4/6">Confirm Changes</button>
+        <div className="flex justify-between">
+          <button onClick={confirmTestCard} className="button md:w-full">Confirm Changes</button>
+          <button onClick={deleteQuizCard} className="button md:w-full">Delete Active Question</button>
+
+        </div>
         <button onClick={addNewQuizCard} className="button md:w-4/6">Add a New Question</button>
       </main>
     </>
