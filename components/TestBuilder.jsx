@@ -210,6 +210,21 @@ export default function TestBuilder({topic}) {
     setCardTrigger(!toggle)
   }
 
+  const deleteQuizCard = async (e) => {
+    if(currentCard.id) {
+      await deleteDoc(doc(db,"users", users.email, "topics", topic, "quiz", currentCard.id))
+      let objInd = cardSet.findIndex((obj) => obj.id === currentCard.id)
+      if(objInd > -1) {
+        cardSet.splice(objInd, 1);
+      }
+      setCurrentCard({
+        question: "",
+        answer: "",
+        id: null
+      })
+    }
+  }
+
   return (
     <>
   <div className="flex flex-col items-center justify-center">
