@@ -2,6 +2,7 @@ import Link from "next/link";
 import {signOutUser, getCurrentUser} from "../utils/firebase";
 import { useRouter } from 'next/router';
 import { useEffect, useState } from "react";
+import { setCookie, getCookie, hasCookie } from "cookies-next";
 
 export default function Nav() {
 
@@ -13,6 +14,10 @@ export default function Nav() {
     const handleGetUser = async () => {
       const currentUser = await getCurrentUser();
       if(currentUser !== null) {
+        if(!getCookie("userCookie")) {
+          setCookie("userCookie", currentUser.email)
+        }
+        
         setUsers(currentUser)
         let emailEnd = currentUser.email.indexOf("@")
         setUserEmail(currentUser.email.substring(0, emailEnd))

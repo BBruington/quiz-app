@@ -1,6 +1,7 @@
 import QuizCard from "@/components/QuizCard";
 import {getDocs, collection} from "firebase/firestore"; 
 import { db, getCurrentUser } from "@/utils/firebase";
+import { setCookie, getCookie, hasCookie } from "cookies-next";
 
 export default function Topic({data}) {
 
