@@ -2,7 +2,7 @@ import Link from "next/link";
 import {signOutUser, getCurrentUser} from "../utils/firebase";
 import { useRouter } from 'next/router';
 import { useEffect, useState } from "react";
-import { setCookie, getCookie, hasCookie } from "cookies-next";
+import { setCookie, getCookie } from "cookies-next";
 
 export default function Nav() {
 
@@ -44,9 +44,8 @@ export default function Nav() {
         <Link onClick={() => checkUrl("http://localhost:3000/login")} href="/login" className="nav">Sign In</Link>
 
       )}
-      <Link onClick={() => checkUrl("http://localhost:3000/questions")} href="/questions" className="nav">Study Topics</Link>
-      <Link onClick={() => checkUrl("http://localhost:3000/builder")} href="/builder" className="nav">Create/Edit Topic</Link>
-      <Link onClick={() => checkUrl("http://localhost:3000/quiz")} href="/quiz" className="nav">Take a Quiz</Link>
+      <Link onClick={() => checkUrl("http://localhost:3000/questions")} href="/questions" className="nav">Study Topic</Link>
+      <Link onClick={() => checkUrl("http://localhost:3000/builder")} href="/builder" className="nav">Edit Topic</Link>
       <Link onClick={() => checkUrl("http://localhost:3000/notes")} href="/notes" className="nav">Notebook</Link>
       {users && (
         <span className="nav">Welcome {userEmail}</span>

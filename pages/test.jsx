@@ -88,10 +88,10 @@ export default function Test() {
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 m-10 w-4/6 md:w-full">
             <div className="w-full">
-              <Link className="flex py-10 p-5 w-full justify-center text-center bg-gray-200 hover:bg-gray-300 rounded-sm" href={`quiz/${topic}`}>Quiz</Link> 
+              <Link className="flex py-10 p-5 w-full justify-center text-center bg-gray-200 hover:bg-gray-300 rounded-sm" href={`questions/${topic}`}>Note Cards</Link> 
             </div>
             <div className="w-full">
-              <Link className="flex py-10 p-5 w-full justify-center text-center bg-gray-200 hover:bg-gray-300 rounded-sm" href={`questions/${topic}`}>Note Cards</Link> 
+              <Link className="flex py-10 p-5 w-full justify-center text-center bg-gray-200 hover:bg-gray-300 rounded-sm" href={`quiz/${topic}`}>Quiz</Link> 
             </div>
         </div>
       </div>

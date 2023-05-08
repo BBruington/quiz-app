@@ -1,7 +1,6 @@
 import QuizCard from "@/components/QuizCard";
 import {getDocs, collection} from "firebase/firestore"; 
-import { db, getCurrentUser } from "@/utils/firebase";
-import { setCookie, getCookie, hasCookie } from "cookies-next";
+import { db } from "@/utils/firebase";
 
 export default function Topic({data}) {
 
@@ -19,12 +18,12 @@ export default function Topic({data}) {
 export async function getStaticProps(staticProps) {
   const params = staticProps.params;
   try {
-    const data = await getDocs(collection(db,"users", "psychological_chemist@hotmail.com", "topics", params.topic, "notecards"))
-    const newData = data.docs.map((doc) => ({...doc.data(), id:doc.id }));
-    newData.sort( (a,b) => {
+    const fetchedData = await getDocs(collection(db,"users", "psychological_chemist@hotmail.com", "topics", params.topic, "notecards"))
+    const userTopicData = fetchedData.docs.map((doc) => ({...doc.data(), id:doc.id }));
+    userTopicData.sort( (a,b) => {
       return a.lastModified.milliseconds - b.lastModified.milliseconds
     })
-    return { props: { data: newData ? newData : {}, }, };
+    return { props: { data: userTopicData ? userTopicData : {}, }, };
 
   } catch(error) {
     console.error(error);
@@ -32,17 +31,17 @@ export async function getStaticProps(staticProps) {
 }
 
 export async function getStaticPaths() {  
-  let data;
+  let userTopicsData;
   await getDocs(collection(db, "users", "psychological_chemist@hotmail.com", "topics")).then((querySnapshot) => {
-    const newData = querySnapshot.docs.map((doc) => ({...doc.data(), id:doc.id }));
-      data = newData                
+    const fetchedData = querySnapshot.docs.map((doc) => ({...doc.data(), id:doc.id }));
+    userTopicsData = fetchedData;
   }) 
 
-  const paths = data?.map( (s) => {
+  const paths = userTopicsData?.map( (top) => {
     return {
       params: 
       { 
-        topic: s.id.toString()  
+        topic: top.id.toString()  
       },
     };
   });
