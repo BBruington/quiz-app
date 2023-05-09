@@ -58,7 +58,6 @@ export const signUpWithEmail = async (email, password) => {
         milliseconds: Date.now()
       }
     })
-    //console.log("user", user)
   })
   .catch((error) => {
     const errorCode = error.code;

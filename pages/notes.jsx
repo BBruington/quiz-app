@@ -55,7 +55,6 @@ export default function Notes() {
   const handleNoteOnClick = (index) => {
     let currentNote = emailNotes[index]
     setActiveNote(currentNote)
-    console.log(activeNote)
   }
 
   const handleEditMode = () => {
@@ -76,21 +75,23 @@ export default function Notes() {
       })
     }
   }
-  const saveNote = async (updatedNote) => {
-    console.log(updatedNote)
-    if(activeNote.id) {
-      if(emailNotes) {
-        const updatedNotesArray = {
-          id: activeNote.id,
-          body: activeNote.body,
-          title: activeNote.title,
-          lastModified:{
-            seconds: activeNote.lastModified.seconds,
-            milliseconds: activeNote.lastModified.milliseconds
+  const saveNotes = async (updatedNote) => {
+    if(emailNotes) {
+      emailNotes.forEach(async (note) => {
+        if(note.changesNeeded === true) {
+          const updatedNotesArray = {
+            id: note.id,
+            body: note.body,
+            title: note.title,
+            lastModified:{
+              seconds: note.lastModified.seconds,
+              milliseconds: note.lastModified.milliseconds
+            }
           }
+          const noteDoc = await doc(db,"users", users.email, "notebook", note.id)
+          await updateDoc(noteDoc, updatedNotesArray);
         }
-        const noteDoc = await doc(db,"users", users.email, "notebook", activeNote.id)
-        await updateDoc(noteDoc, updatedNotesArray);
+      })
 
       setActiveNote({
         id: activeNote.id,
@@ -102,7 +103,6 @@ export default function Notes() {
           milliseconds: activeNote.lastModified.milliseconds
         }
       })
-      }
     }
     setAddNoteToggle(!addNoteToggle)
   }
@@ -148,8 +148,6 @@ export default function Notes() {
 
   const updateNote = async (updatedNote) => {
     if(emailNotes) {
-      console.log(updatedNote)
-      emailNotes.find((note) => activeNote.id = note.id)
       const updatedNotesArray = {
         id: updatedNote.id,
         body: updatedNote.body,
@@ -161,7 +159,6 @@ export default function Notes() {
         }
       }
       const foundIndex = emailNotes.findIndex(note => note.id == activeNote.id);
-      console.log(foundIndex)
       emailNotes[foundIndex] = updatedNotesArray;
       setActiveNote(updatedNotesArray)
     }
@@ -196,7 +193,7 @@ export default function Notes() {
                   </div>
                   <div className="mt-2 ml-1 flex flex-col space-y-4 md:space-y-0 md:flex-row items-center justify-center">
                     <button 
-                      onClick={() => saveNote(note.id)} className={`text-green-700 hover:text-green-500 md:mr-2 font-bold text-sm sm:text-base 
+                      onClick={() => saveNotes(note.id)} className={`text-green-700 hover:text-green-500 md:mr-2 font-bold text-sm sm:text-base 
                       ${note.changesNeeded === false? ('cursor-not-allowed hover:text-green-200 text-green-100') : ('text-green-900')}`}
                       disabled={note.changesNeeded === false}
                     >Save</button>
