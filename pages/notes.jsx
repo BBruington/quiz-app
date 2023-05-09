@@ -2,10 +2,9 @@ import ReactMarkdown from "react-markdown"
 import NoteMain from '../components/myNotes/noteMain';
 import uuid from 'react-uuid';
 import { useState, useEffect } from 'react';
-import { addDoc, updateDoc, doc, setDoc, getDocs, collection, deleteDoc } from 'firebase/firestore';
+import { updateDoc, doc, setDoc, getDocs, collection, deleteDoc } from 'firebase/firestore';
 import { getCurrentUser, db } from "../utils/firebase";
 
-const fetcher = () => fetch(url).then(res => res.json())
 export default function Notes() {
 
   const [users, setUsers] = useState(null)
@@ -35,6 +34,10 @@ export default function Notes() {
             let newData = querySnapshot.docs.map((doc) => ({...doc.data(), id:doc.id }));
             newData = newData.sort( (a,b) => {
               return b.lastModified.milliseconds - a.lastModified.milliseconds
+            })
+
+            newData.forEach(object => {
+              object.changesNeeded = false;
             })
             if(newData) {
               setEmailNotes(newData);
@@ -145,6 +148,8 @@ export default function Notes() {
 
   const updateNote = async (updatedNote) => {
     if(emailNotes) {
+      console.log(updatedNote)
+      emailNotes.find((note) => activeNote.id = note.id)
       const updatedNotesArray = {
         id: updatedNote.id,
         body: updatedNote.body,
@@ -155,11 +160,12 @@ export default function Notes() {
           milliseconds: updatedNote.lastModified.milliseconds
         }
       }
+      const foundIndex = emailNotes.findIndex(note => note.id == activeNote.id);
+      console.log(foundIndex)
+      emailNotes[foundIndex] = updatedNotesArray;
       setActiveNote(updatedNotesArray)
-      console.log(activeNote)
-      console.log(emailNotes)
     }
-    setAddNoteToggle(!addNoteToggle)
+    //setAddNoteToggle(!addNoteToggle)
   }
 
   return (
@@ -191,8 +197,8 @@ export default function Notes() {
                   <div className="mt-2 ml-1 flex flex-col space-y-4 md:space-y-0 md:flex-row items-center justify-center">
                     <button 
                       onClick={() => saveNote(note.id)} className={`text-green-700 hover:text-green-500 md:mr-2 font-bold text-sm sm:text-base 
-                      ${!note.changesNeeded && 'cursor-not-allowed hover:text-green-200 text-green-200'}`}
-                      disabled={!note.changesNeeded}
+                      ${note.changesNeeded === false? ('cursor-not-allowed hover:text-green-200 text-green-100') : ('text-green-900')}`}
+                      disabled={note.changesNeeded === false}
                     >Save</button>
                     <button onClick={() => deleteNote(note.id)} className="text-orange-700 hover:text-orange-500 font-bold text-sm sm:text-base">Delete</button>
                   </div>
