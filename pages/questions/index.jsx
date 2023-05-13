@@ -8,6 +8,7 @@ import { db, getCurrentUser } from "@/utils/firebase";
 export default function Test() {
   const [topics, setTopics] = useState([]);
   const [topic, setTopic] = useState("");
+  const [topicData, setTopicData] = useState(null);
   const [selectTopic, setSelectTopic] = useState(false);
   const [toggle, setToggle] = useState(false);
   const [card, setCard] = useState(false);
@@ -43,9 +44,29 @@ export default function Test() {
     getTopics()
   }, [selectTopic, toggle])
 
-  const selectQuizOrCard = (type) => {
-    if (type === "quiz") setQuiz(true)
-    if (type === "card") setCard(true)
+  const selectQuizOrCard = async (type) => {
+    try {
+      if (type === "quiz") {
+        const fetchedData = await getDocs(collection(db,"users", users.email, "topics", topic, "quiz"))
+        const userTopicData = fetchedData.docs.map((doc) => ({...doc.data(), id:doc.id }));
+        userTopicData.sort( (a,b) => {
+          return a.lastModified.milliseconds - b.lastModified.milliseconds;
+        })
+        setTopicData(userTopicData);
+        setQuiz(true);
+      }
+      if (type === "card") {
+        const fetchedData = await getDocs(collection(db,"users", users.email, "topics", topic, "notecards"))
+        const userTopicData = fetchedData.docs.map((doc) => ({...doc.data(), id:doc.id }));
+        userTopicData.sort( (a,b) => {
+          return a.lastModified.milliseconds - b.lastModified.milliseconds;
+        })
+        setTopicData(userTopicData);
+        setCard(true);
+      }
+    } catch(error) {
+      console.error(error);
+    }
   }
 
   const selectTopicListHandler = (top) => {
@@ -97,8 +118,8 @@ export default function Test() {
         </div>
       </div>
       )}
-      {card && <QuizCard topic={topic} topics={topics} />}
-      {quiz && <TestCard topic={topic} topics={topics} />}
+      {card && <QuizCard topic={topicData} />}
+      {quiz && <TestCard topic={topicData} />}
     </div>
   )
 }
