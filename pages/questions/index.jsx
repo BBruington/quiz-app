@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import Link from "next/link";
+import TestCard from "../../components/TestCard";
+import QuizCard from "../../components/QuizCard";
 import uuid from "react-uuid"
 import { collection, addDoc, getDocs, setDoc, doc } from "firebase/firestore"; 
 import { db, getCurrentUser } from "@/utils/firebase";
@@ -88,14 +89,16 @@ export default function Test() {
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 m-10 w-4/6 md:w-full">
             <div className="w-full">
-              <Link className="flex py-10 p-5 w-full justify-center text-center bg-gray-200 hover:bg-gray-300 rounded-sm" href={`quiz/${topic}`}>Quiz</Link> 
+              <button className="flex py-10 p-5 w-full justify-center text-center bg-gray-200 hover:bg-gray-300 rounded-sm" onClick={() => selectQuizOrCard("quiz")}>Quiz</button> 
             </div>
             <div className="w-full">
-              <Link className="flex py-10 p-5 w-full justify-center text-center bg-gray-200 hover:bg-gray-300 rounded-sm" href={`questions/${topic}`}>Note Cards</Link> 
+              <button className="flex py-10 p-5 w-full justify-center text-center bg-gray-200 hover:bg-gray-300 rounded-sm" onClick={() => selectQuizOrCard("card")}>Note Cards</button> 
             </div>
         </div>
       </div>
       )}
+      {card && <QuizCard topic={topic} topics={topics} />}
+      {quiz && <TestCard topic={topic} topics={topics} />}
     </div>
   )
 }
