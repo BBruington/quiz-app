@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import CardBuilder from "../../components/CardBuilder";
 import TestBuilder from "../../components/TestBuilder";
+import LinkToSignIn from "../../components/LinkToSignIn";
 import uuid from "react-uuid"
 import { collection, addDoc, getDocs, setDoc, doc, deleteDoc, updateDoc } from "firebase/firestore"; 
 import { db, getCurrentUser } from "@/utils/firebase";
@@ -20,7 +21,7 @@ export default function Builder() {
       if(currentUser !== null) {
         setUsers(currentUser)
       } else {setUsers(null)}
-      if (!selectTopic) {
+      if (!selectTopic && currentUser !== null) {
         await getDocs(collection(db, "users", currentUser.email, "topics")).then((querySnapshot) => {
         let newData = querySnapshot.docs.map((doc) => ({...doc.data(), id:doc.id }));
           setTopics(newData);                
@@ -69,6 +70,7 @@ export default function Builder() {
 
   return (
     <div className="w-full">
+      {users ? (<>
       { !selectTopic && !card && !quiz && (
         <div className="flex flex-col items-center justify-center whitespace-nowrap w-full mt-10">
           <span className="text-3xl font-bold mb-8">Please select a topic or create a new one</span>
@@ -107,6 +109,9 @@ export default function Builder() {
       )}
       {card && <CardBuilder topic={topic} topics={topics} />}
       {quiz && <TestBuilder topic={topic} topics={topics} />}
+      </>) : (<>
+        <LinkToSignIn />
+      </>)}
     </div>
   )
 }

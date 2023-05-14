@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import LinkToSignIn from "../../components/LinkToSignIn";
 import TestCard from "../../components/TestCard";
 import QuizCard from "../../components/QuizCard";
 import uuid from "react-uuid"
@@ -21,7 +22,7 @@ export default function Test() {
       if(currentUser !== null) {
         setUsers(currentUser)
       } else {setUsers(null)}
-      if (!selectTopic) {
+      if (!selectTopic && currentUser !== null) {
         await getDocs(collection(db, "users", currentUser.email, "topics")).then((querySnapshot) => {
         let newData = querySnapshot.docs.map((doc) => ({...doc.data(), id:doc.id }));
           setTopics(newData);                
@@ -90,36 +91,41 @@ export default function Test() {
 
   return (
     <div className="w-full">
-      { !selectTopic && !card && !quiz && (
-        <div className="flex flex-col items-center justify-center whitespace-nowrap w-full mt-10">
-          <span className="text-3xl font-bold mb-8">Please select a topic to study</span>
+      {users ? (
+        <>{ !selectTopic && !card && !quiz && (
+          <div className="flex flex-col items-center justify-center whitespace-nowrap w-full mt-10">
+            <span className="text-3xl font-bold mb-8">Please select a topic to study</span>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 m-10 w-4/6 md:w-full">
+              {topics && topics.map((t) => (
+                <div className="w-full" key={t.id}>
+                  <button className="flex py-10 p-5 w-full justify-center text-center bg-gray-200 hover:bg-gray-300 rounded-sm" onClick={() => selectTopicListHandler(t)}>{t.id}</button> 
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        {selectTopic && !card && !quiz && (
+          <div className="flex flex-col items-center justify-center whitespace-nowrap w-full mt-10">
+          <span className="text-2xl md:text-3xl font-bold mb-8">You have selected {topic}</span>
+          <span className="text-2xl md:text-3xl font-bold mb-8">Would you like to study with a quiz or set of note cards?</span>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 m-10 w-4/6 md:w-full">
-            {topics && topics.map((t) => (
-              <div className="w-full" key={t.id}>
-                <button className="flex py-10 p-5 w-full justify-center text-center bg-gray-200 hover:bg-gray-300 rounded-sm" onClick={() => selectTopicListHandler(t)}>{t.id}</button> 
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 m-10 w-4/6 md:w-full">
+              <div className="w-full">
+                <button className="flex py-10 p-5 w-full justify-center text-center bg-gray-200 hover:bg-gray-300 rounded-sm" onClick={() => selectQuizOrCard("quiz")}>Quiz</button> 
               </div>
-            ))}
+              <div className="w-full">
+                <button className="flex py-10 p-5 w-full justify-center text-center bg-gray-200 hover:bg-gray-300 rounded-sm" onClick={() => selectQuizOrCard("card")}>Note Cards</button> 
+              </div>
           </div>
         </div>
-      )}
-      {selectTopic && !card && !quiz && (
-        <div className="flex flex-col items-center justify-center whitespace-nowrap w-full mt-10">
-        <span className="text-2xl md:text-3xl font-bold mb-8">You have selected {topic}</span>
-        <span className="text-2xl md:text-3xl font-bold mb-8">Would you like to study with a quiz or set of note cards?</span>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 m-10 w-4/6 md:w-full">
-            <div className="w-full">
-              <button className="flex py-10 p-5 w-full justify-center text-center bg-gray-200 hover:bg-gray-300 rounded-sm" onClick={() => selectQuizOrCard("quiz")}>Quiz</button> 
-            </div>
-            <div className="w-full">
-              <button className="flex py-10 p-5 w-full justify-center text-center bg-gray-200 hover:bg-gray-300 rounded-sm" onClick={() => selectQuizOrCard("card")}>Note Cards</button> 
-            </div>
-        </div>
-      </div>
-      )}
-      {card && <QuizCard topic={topicData} />}
-      {quiz && <TestCard topic={topicData} />}
+        )}
+        {card && <QuizCard topic={topicData} />}
+        {quiz && <TestCard topic={topicData} />}</>
+      ) : (
+      <>
+        <LinkToSignIn />
+      </>)}
     </div>
   )
 }
