@@ -1,5 +1,6 @@
 import ReactMarkdown from "react-markdown"
 import NoteMain from '../components/myNotes/noteMain';
+import LinkToSignIn from '../components/LinkToSignIn';
 import uuid from 'react-uuid';
 import { useState, useEffect } from 'react';
 import { updateDoc, doc, setDoc, getDocs, collection, deleteDoc } from 'firebase/firestore';
@@ -167,50 +168,54 @@ export default function Notes() {
 
   return (
     <>
+        {users ? (<>
       <div className="flex justify-start">
-        <div className="w-2/6 overflow-auto border-r-2 border-r-gray-200 border-b-2 border-t-2 h-[90vh]">
-            <h1 className="flex text-xl md:text-3xl font-bold justify-center items-center text tracking-tight text-gray-900 mt-1 md:m-0">Notes</h1>
-            <div className="flex flex-cols justify-between p-4 md:flex-row ml-2">
-              <button onClick={handleEditMode} className="text-green-700 hover:text-green-500 font-bold lg:mr-5 text-center text-sm sm:text-base">Edit Note</button>
-              <button onClick={addNote} className="text-teal-600 hover:text-teal-400 font-bold ml-2 text-center text-sm sm:text-base">Add Note</button>
-            </div>
-          <div className="app-sidebar-notes">
+          <div className="w-2/6 overflow-auto border-r-2 border-r-gray-200 border-b-2 border-t-2 h-[90vh]">
+              <h1 className="flex text-xl md:text-3xl font-bold justify-center items-center text tracking-tight text-gray-900 mt-1 md:m-0">Notes</h1>
+              <div className="flex flex-cols justify-between p-4 md:flex-row ml-2">
+                <button onClick={handleEditMode} className="text-green-700 hover:text-green-500 font-bold lg:mr-5 text-center text-sm sm:text-base">Edit Note</button>
+                <button onClick={addNote} className="text-teal-600 hover:text-teal-400 font-bold ml-2 text-center text-sm sm:text-base">Add Note</button>
+              </div>
+            <div className="app-sidebar-notes">
 
-            {/* clickable notes */}
+              {/* clickable notes */}
 
-            {(emailNotes.map((note, index) => (
-              <div key={note.id} className="p-4 cursor-pointer hover:bg-gray-200" onClick={() => handleNoteOnClick(index)}>
-                <div className="flex justify-between items-center">
-                  <div>
-                    <strong className="text-xs md:text-md leading-3">{note.title}</strong> 
-                    <ReactMarkdown className="text-xs md:text-sm ">{note.body && note.body.substr(0, 25) + '...'}</ReactMarkdown>
+              {(emailNotes.map((note, index) => (
+                <div key={note.id} className="p-4 cursor-pointer hover:bg-gray-200" onClick={() => handleNoteOnClick(index)}>
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <strong className="text-xs md:text-md leading-3">{note.title}</strong> 
+                      <ReactMarkdown className="text-xs md:text-sm ">{note.body && note.body.substr(0, 25) + '...'}</ReactMarkdown>
 
-                    <small className="font-light block text-xs">last modified: {new Date(note.lastModified.seconds * 1000).toLocaleDateString("en-US", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                    </small>
-                  </div>
-                  <div className="mt-2 ml-1 flex flex-col space-y-4 md:space-y-0 md:flex-row items-center justify-center">
-                    <button 
-                      onClick={() => saveNotes(note.id)} className={`text-green-700 hover:text-green-500 md:mr-2 font-bold text-sm sm:text-base 
-                      ${note.changesNeeded === false? ('cursor-not-allowed hover:text-green-200 text-green-100') : ('text-green-900')}`}
-                      disabled={note.changesNeeded === false}
-                    >Save</button>
-                    <button onClick={() => deleteNote(note.id)} className="text-orange-700 hover:text-orange-500 font-bold text-sm sm:text-base">Delete</button>
+                      <small className="font-light block text-xs">last modified: {new Date(note.lastModified.seconds * 1000).toLocaleDateString("en-US", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                      </small>
+                    </div>
+                    <div className="mt-2 ml-1 flex flex-col space-y-4 md:space-y-0 md:flex-row items-center justify-center">
+                      <button 
+                        onClick={() => saveNotes(note.id)} className={`text-green-700 hover:text-green-500 md:mr-2 font-bold text-sm sm:text-base 
+                        ${note.changesNeeded === false? ('cursor-not-allowed hover:text-green-200 text-green-100') : ('text-green-900')}`}
+                        disabled={note.changesNeeded === false}
+                      >Save</button>
+                      <button onClick={() => deleteNote(note.id)} className="text-orange-700 hover:text-orange-500 font-bold text-sm sm:text-base">Delete</button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            )))}
+              )))}
 
+            </div>
           </div>
-        </div>
-          <NoteMain 
-          activeNote={activeNote}
-          updateNote={updateNote}
-          editMode={editMode}          
-          />
+            <NoteMain 
+            activeNote={activeNote}
+            updateNote={updateNote}
+            editMode={editMode}          
+            />
       </div>
+      </>) : (<>
+        <LinkToSignIn />
+      </>)}
     </>
   )
 }
