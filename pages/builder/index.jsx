@@ -56,11 +56,13 @@ export default function Builder() {
   }
 
   const selectTopicButtonHandler = async () => {
-    await setDoc(doc(db, "users", users.email, "topics", topic,), {
+    console.log(users.email)
+    const data = await setDoc(doc(db, "users", users.email, "topics", topic,), {
       id: uuid()
     })
-    setSelectTopic(true);
-    setToggle(!toggle)
+    console.log(data)
+    //setSelectTopic(true);
+    //setToggle(!toggle)
   }
 
   const createTopic = (event) => {

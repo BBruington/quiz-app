@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import LinkToSignIn from "../../components/LinkToSignIn";
 import TestCard from "../../components/TestCard";
 import QuizCard from "../../components/QuizCard";
@@ -92,10 +93,18 @@ export default function Test() {
   return (
     <div className="w-full">
       {users ? (
-        <>{ !selectTopic && !card && !quiz && (
+        <>
+        {topics.length === 0 && 
+        <>
+          <div className="flex justify-center">It seems like you don&apos;t have any topics to study. Please check out the topic builder to design your own quizes and note cards!</div>
+          <Link onClick={() => checkUrl("http://localhost:3000/builder")} href="/builder" className="nav flex justify-center">Build a topic to study</Link>
+        </>
+        }
+        { !selectTopic && !card && !quiz && (
           <div className="flex flex-col items-center justify-center whitespace-nowrap w-full mt-10">
+            {topics.length !== 0 && 
             <span className="text-3xl font-bold mb-8">Please select a topic to study</span>
-            
+            }
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 m-10 w-4/6 md:w-full">
               {topics && topics.map((t) => (
                 <div className="w-full" key={t.id}>
