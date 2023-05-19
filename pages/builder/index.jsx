@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
+import uuid from "react-uuid";
 import CardBuilder from "../../components/CardBuilder";
 import TestBuilder from "../../components/TestBuilder";
 import LinkToSignIn from "../../components/LinkToSignIn";
-import uuid from "react-uuid"
 import { collection, addDoc, getDocs, setDoc, doc, deleteDoc, updateDoc } from "firebase/firestore"; 
 import { db, getCurrentUser } from "@/utils/firebase";
 
@@ -55,14 +55,13 @@ export default function Builder() {
     setSelectTopic(true);
   }
 
-  const selectTopicButtonHandler = async () => {
-    console.log(users.email)
-    const data = await setDoc(doc(db, "users", users.email, "topics", topic,), {
+  const selectTopicButtonHandler = async (e) => {
+    e.preventDefault();
+    await setDoc(doc(db, "users", users.email, "topics", topic,), {
       id: uuid()
     })
-    console.log(data)
-    //setSelectTopic(true);
-    //setToggle(!toggle)
+    setSelectTopic(true);
+    setToggle(!toggle)
   }
 
   const createTopic = (event) => {
