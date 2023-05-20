@@ -130,7 +130,8 @@ export default function Test() {
         </div>
         )}
         {card && <QuizCard topic={topicData} />}
-        {quiz && <TestCard topic={topicData} />}</>
+        {quiz && <TestCard topic={topicData} />}
+        </>
       ) : (
       <>
         <LinkToSignIn />

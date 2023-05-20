@@ -53,8 +53,8 @@ export default function QuizCard({topic}) {
   }
   
   return (
-    <>
-      <div className="flex flex-col items-center justify-center max-w-3xl">
+    <>{cardSet.length > 0 ? (
+      <><div className="flex flex-col items-center justify-center max-w-3xl">
         {currentQuestion && currentQuestion.map( (currentQuestion) => (
           <div className="flex flex-col" key={currentQuestion.number}>
             <div className="flex justify-center mt-20 pb-10 text-lg font-bold">Question {questionNum + 1}</div>
@@ -87,7 +87,9 @@ export default function QuizCard({topic}) {
             </div>
           ))}
         </div>
-      </div>
-    </>
+      </div></>
+    ) : (
+      <div className="flex justify-center items-center">It seems you haven&apos;t built a set of notecards for this topic, please go to edit topic to create a set!</div>
+    )}</>
   )
 }

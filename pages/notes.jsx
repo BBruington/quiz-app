@@ -168,8 +168,8 @@ export default function Notes() {
 
   return (
     <>
-        {users ? (<>
-      <div className="flex justify-start">
+    {users ? (
+      <><div className="flex justify-start">
           <div className="w-2/6 overflow-auto border-r-2 border-r-gray-200 border-b-2 border-t-2 h-[90vh]">
               <h1 className="flex text-xl md:text-3xl font-bold justify-center items-center text tracking-tight text-gray-900 mt-1 md:m-0">Notes</h1>
               <div className="flex flex-cols justify-between p-4 md:flex-row ml-2">
@@ -212,8 +212,9 @@ export default function Notes() {
             updateNote={updateNote}
             editMode={editMode}          
             />
-      </div>
-      </>) : (<>
+      </div></>
+    ) : (
+      <>
         <LinkToSignIn />
       </>)}
     </>
