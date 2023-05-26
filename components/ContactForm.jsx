@@ -1,7 +1,7 @@
 import { EnvelopeIcon, PhoneIcon } from '@heroicons/react/24/outline';
 import React, { useRef } from 'react';
 import emailjs from '@emailjs/browser';
-import { Store } from 'react-notifications-component';
+import { Store } from 'react-notifications-component'
 import { useState } from 'react';
 
 
