@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { sanityClient, urlFor } from "./sanity";
+import { sanityClient, urlFor } from "../utils/sanity";
 
 
 export default function Home({posts}) {
