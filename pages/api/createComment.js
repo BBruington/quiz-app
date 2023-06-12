@@ -1,5 +1,4 @@
-import { sanityClient }  from '../../utils/sanity';
-
+import {createClient} from "next-sanity";
 
 
 //required data for sanity to work
@@ -10,7 +9,7 @@ const config = {
 }
 
 //config sanity client to mine
-const client = sanityClient(config);
+const client = createClient(config);
 
 
 export default async function createComment(
