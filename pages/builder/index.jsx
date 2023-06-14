@@ -4,7 +4,7 @@ import CardBuilder from "../../components/CardBuilder";
 import TestBuilder from "../../components/TestBuilder";
 import LinkToSignIn from "../../components/LinkToSignIn";
 import { collection, addDoc, getDocs, setDoc, doc, deleteDoc, updateDoc } from "firebase/firestore"; 
-import { db, getCurrentUser } from "@/utils/firebase";
+import { db, getCurrentUser } from "@/lib/firebase"; 
 
 export default function Builder() {
   const [topics, setTopics] = useState([]);

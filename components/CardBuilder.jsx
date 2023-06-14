@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import uuid from "react-uuid"
 import { collection, addDoc, getDocs, setDoc, doc, deleteDoc, updateDoc } from "firebase/firestore"; 
-import { db, getCurrentUser } from "@/utils/firebase";
+import { db, getCurrentUser } from "@/lib/firebase"; 
 
 export default function CardBuilder({topic}) {
   

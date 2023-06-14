@@ -1,5 +1,5 @@
 import Link from "next/link";
-import {signOutUser, getCurrentUser} from "../utils/firebase";
+import {signOutUser, getCurrentUser} from "../lib/firebase";
 import { useRouter } from 'next/router';
 import { useEffect, useState } from "react";
 import { setCookie, getCookie } from "cookies-next";

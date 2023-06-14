@@ -1,6 +1,6 @@
 import { GetStaticProps } from "next";
 import PortableText from "react-portable-text";
-import { sanityClient, urlFor } from "../../utils/sanity";
+import { sanityClient, urlFor } from "../../lib/sanity";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useState } from "react";
 

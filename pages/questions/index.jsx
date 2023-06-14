@@ -5,7 +5,7 @@ import TestCard from "../../components/TestCard";
 import QuizCard from "../../components/QuizCard";
 import uuid from "react-uuid"
 import { collection, addDoc, getDocs, setDoc, doc } from "firebase/firestore"; 
-import { db, getCurrentUser } from "@/utils/firebase";
+import { db, getCurrentUser } from "@/lib/firebase";
 
 export default function Test() {
   const [topics, setTopics] = useState([]);
