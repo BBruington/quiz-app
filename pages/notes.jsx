@@ -4,7 +4,7 @@ import LinkToSignIn from '../components/LinkToSignIn';
 import uuid from 'react-uuid';
 import { useState, useEffect } from 'react';
 import { updateDoc, doc, setDoc, getDocs, collection, deleteDoc } from 'firebase/firestore';
-import { getCurrentUser, db } from "../utils/firebase";
+import { getCurrentUser, db } from "../lib/firebase";
 
 export default function Notes() {
 

@@ -91,7 +91,7 @@ export default function Test() {
   }
 
   return (
-    <div className="w-full">
+    <div className="flex justify-center w-full">
       {users ? (
         <>
         {topics.length === 0 && 
