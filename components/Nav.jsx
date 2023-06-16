@@ -3,6 +3,14 @@ import {signOutUser, getCurrentUser} from "../lib/firebase";
 import { useRouter } from 'next/router';
 import { useEffect, useState } from "react";
 import { setCookie, getCookie } from "cookies-next";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
 
 export default function Nav() {
 
@@ -37,18 +45,26 @@ export default function Nav() {
   return (
     <div className="flex justify-center items-center md:space-x-5 space-x-3">
       <Link onClick={() => checkUrl("http://localhost:3000")} href="/" className="ml-5 nav">Home</Link>
-      {users ? (
-        <button onClick={signOut} className="nav">Sign Out</button>
-
-      ) : (
-        <Link onClick={() => checkUrl("http://localhost:3000/login")} href="/login" className="nav">Sign In</Link>
-
-      )}
       <Link onClick={() => checkUrl("http://localhost:3000/questions")} href="/questions" className="nav">Study Topic</Link>
       <Link onClick={() => checkUrl("http://localhost:3000/builder")} href="/builder" className="nav">Edit Topic</Link>
       <Link onClick={() => checkUrl("http://localhost:3000/notes")} href="/notes" className="nav">Notebook</Link>
+      {!users && (
+        <Link onClick={() => checkUrl("http://localhost:3000/login")} href="/login" className="nav">Sign In</Link>
+      )}
       {users && (
-        <span className="nav">Welcome {userEmail}</span>
+        <Sheet>
+        <SheetTrigger className="nav">Welcome {userEmail}</SheetTrigger>
+        <SheetContent>
+          <SheetHeader>
+            <SheetTitle>Edit Profile</SheetTitle>
+            <SheetDescription>
+              <button onClick={signOut}>
+                Sign Out
+              </button>
+            </SheetDescription>
+          </SheetHeader>
+        </SheetContent>
+      </Sheet>
       )}
     </div>
   )
