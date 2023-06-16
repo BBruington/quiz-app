@@ -4,8 +4,10 @@ export default function LinkToSignIn() {
 
   return (
     <>
-    <div className="flex justify-center">Please sign in to study.</div>
-    <Link onClick={() => checkUrl("http://localhost:3000/login")} href="/login" className="flex justify-center nav">Sign In</Link>
+    <div className="flex flex-col justify-center">
+      <div className="flex justify-center">Please sign in to study.</div>
+      <Link onClick={() => checkUrl("http://localhost:3000/login")} href="/login" className="flex justify-center nav">Sign In</Link>
+    </div>
     </>
   )
 }

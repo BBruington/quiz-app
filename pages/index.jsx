@@ -20,7 +20,7 @@ export default function Home({posts}) {
                   <div className="flex justify-between p-5 bg-white">
                     <div>
                       <p className="text-lg font-bold">{post.title}</p>
-                      <p>{post.description} by: <span className="font-bold">{post.author.name}</span></p>
+                      <p>{post.description} by: <span className="text-green-600 font-bold">{post.author.name}</span></p>
                     </div>
                     <img className="h-12 w-12 rounded-full" src={urlFor(post.author.image).url()} alt="" />
                   </div>

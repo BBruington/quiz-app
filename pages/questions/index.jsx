@@ -91,13 +91,15 @@ export default function Test() {
   }
 
   return (
-    <div className="flex justify-center w-full">
+    <div className="flex justify-center items-center w-full">
       {users ? (
         <>
         {topics.length === 0 && 
         <>
+        <div className="flex flex-col justify-center items-center">
           <div className="flex justify-center">It seems like you don&apos;t have any topics to study. Please check out the topic builder to design your own quizes and note cards!</div>
           <Link onClick={() => checkUrl("http://localhost:3000/builder")} href="/builder" className="nav flex justify-center">Build a topic to study</Link>
+        </div>
         </>
         }
         { !selectTopic && !card && !quiz && (

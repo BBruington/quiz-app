@@ -1,4 +1,4 @@
-import { signUpWithEmail, db, getCurrentUser } from "../../utils/firebase";
+import { signUpWithEmail, db, getCurrentUser } from "../../lib/firebase";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { collection, addDoc } from "firebase/firestore";
