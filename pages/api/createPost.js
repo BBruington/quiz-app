@@ -15,7 +15,7 @@ export default async function createComment(
   req,
   res
 ) {
-  const {_id, title, description, author, email, mainImage, body, } = JSON.parse(req.body);
+  const {_id, title, description, email, mainImage, body, } = JSON.parse(req.body);
 
   try{
     await client.create({
@@ -24,9 +24,13 @@ export default async function createComment(
       description,
       mainImage,
       body,
-      author,
+      author: {
+        //update the author with this id
+        _type: 'reference',
+        _ref: _id
+      },
       email,
-      comment
+      comment,
     });
   } catch(err) {
     return res.status(500).json({ message: "Failed to submit comment", err});

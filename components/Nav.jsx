@@ -2,7 +2,7 @@ import Link from "next/link";
 import {signOutUser, getCurrentUser} from "../lib/firebase";
 import { useRouter } from 'next/router';
 import { useEffect, useState } from "react";
-import { setCookie, getCookie } from "cookies-next";
+//import { setCookie, getCookie } from "cookies-next";
 import {
   Sheet,
   SheetContent,
@@ -22,9 +22,9 @@ export default function Nav() {
     const handleGetUser = async () => {
       const currentUser = await getCurrentUser();
       if(currentUser !== null) {
-        if(!getCookie("userCookie")) {
-          setCookie("userCookie", currentUser.email)
-        }
+        // if(!getCookie("userCookie")) {
+        //   setCookie("userCookie", currentUser.email)
+        // }
         
         setUsers(currentUser)
         let emailEnd = currentUser.email.indexOf("@")
@@ -57,9 +57,12 @@ export default function Nav() {
         <SheetContent>
           <SheetHeader>
             <SheetTitle>Edit Profile</SheetTitle>
-            <SheetDescription>
-              <button onClick={signOut}>
+            <SheetDescription className="flex flex-col space-y-2 items-start">
+              <button className="hover:underline" onClick={signOut}>
                 Sign Out
+              </button>
+              <button className="text-green-600 hover:underline">
+                Create a Post
               </button>
             </SheetDescription>
           </SheetHeader>
