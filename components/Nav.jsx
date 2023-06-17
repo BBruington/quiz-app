@@ -61,9 +61,10 @@ export default function Nav() {
               <button className="hover:underline" onClick={signOut}>
                 Sign Out
               </button>
-              <button className="text-green-600 hover:underline">
+              <Link onClick={() => checkUrl("http://localhost:3000/post/builder")} href="/post/builder"
+              className="text-green-600 hover:underline">
                 Create a Post
-              </button>
+              </Link>
             </SheetDescription>
           </SheetHeader>
         </SheetContent>
