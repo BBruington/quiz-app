@@ -13,6 +13,7 @@
     "@heroicons/react": "^2.0.18",
     "@next/font": "13.1.6",
     "@portabletext/react": "^3.0.2",
+    "@radix-ui/react-avatar": "^1.0.3",
     "@radix-ui/react-dialog": "^1.0.4",
     "@sanity/cli": "^3.11.3",
     "@sanity/client": "^6.1.3",

@@ -1,8 +1,10 @@
 import Link from "next/link";
 import {signOutUser, getCurrentUser} from "../lib/firebase";
+import { sanityClient, urlFor } from "../lib/sanity";
 import { useRouter } from 'next/router';
 import { useEffect, useState } from "react";
 //import { setCookie, getCookie } from "cookies-next";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   Sheet,
   SheetContent,
@@ -12,19 +14,18 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 
-export default function Nav() {
+export default function Nav({userInfo}) {
+  console.log(userInfo)
 
   const router = useRouter()
   const [users, setUsers] = useState(null);  
+  const [usersInfo, setUsersInfo] = useState(null);  
   const [userEmail, setUserEmail] = useState(null);   
 
   useEffect(()=>{
     const handleGetUser = async () => {
       const currentUser = await getCurrentUser();
       if(currentUser !== null) {
-        // if(!getCookie("userCookie")) {
-        //   setCookie("userCookie", currentUser.email)
-        // }
         
         setUsers(currentUser)
         let emailEnd = currentUser.email.indexOf("@")
@@ -53,7 +54,12 @@ export default function Nav() {
       )}
       {users && (
         <Sheet>
-        <SheetTrigger className="nav">Welcome {userEmail}</SheetTrigger>
+        <SheetTrigger className="nav flex justify-center items-center">Welcome {userEmail}
+          <Avatar className="md:ml-5 ml-3">
+            <AvatarImage src="https://github.com/shadcn.png" />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
+        </SheetTrigger>
         <SheetContent>
           <SheetHeader>
             <SheetTitle>Edit Profile</SheetTitle>
@@ -72,4 +78,22 @@ export default function Nav() {
       )}
     </div>
   )
+}
+
+export const getServerSideProps = async () => {
+  const userQuery = `*[_type == "author" && email == "bibruington@gmail.com"]{
+    _id,
+    slug,
+    image,
+  }`
+    const userInfo = await sanityClient.fetch(userQuery, {
+      slug: "beny-boy",
+    });
+
+  return {
+    props: {
+      userInfo,
+    },
+    revalidate: 60,
+  }
 }

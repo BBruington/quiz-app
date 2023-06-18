@@ -6,6 +6,9 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+// if(!getCookie("userCookie")) {
+  //   setCookie("userCookie", currentUser.email)
+  // }
 
 const handleItWorks = () => {
   console.log("it works")
