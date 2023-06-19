@@ -3,7 +3,6 @@ import {signOutUser, getCurrentUser} from "../lib/firebase";
 import { sanityClient, urlFor } from "../lib/sanity";
 import { useRouter } from 'next/router';
 import { useEffect, useState } from "react";
-//import { setCookie, getCookie } from "cookies-next";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   Sheet,
