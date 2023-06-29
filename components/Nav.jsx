@@ -36,7 +36,7 @@ export default function Nav({userInfo}) {
 
   useEffect(()=>{
     const handleGetUser = async () => {
-      const currentUser = await getCurrentUser();
+      const currentUser = await getCurrentUser(); 
       if(currentUser !== null) {
         
         setUsers(currentUser)
@@ -106,7 +106,7 @@ export default function Nav({userInfo}) {
                 </DialogContent>
               </Dialog>
             </SheetTitle>
-            <SheetDescription className="flex flex-col space-y-2 items-start">
+            <SheetDescription className="flex flex-col space-y-2 items-start ml-2">
               <button className="hover:underline" onClick={signOut}>
                 Sign Out
               </button>
@@ -122,16 +122,20 @@ export default function Nav({userInfo}) {
     </div>
   )
 }
-
+ 
 export const getServerSideProps = async () => {
   const userQuery = `*[_type == "author" && email == "bibruington@gmail.com"]{
     _id,
     slug,
     image,
   }`
-    const userInfo = await sanityClient.fetch(userQuery, {
-      slug: "beny-boy",
-    });
+  const userInfo = await sanityClient.fetch(userQuery); 
+
+  if (!userInfo) { 
+    return {
+      notFound: true
+    }
+  }
 
   return {
     props: {
