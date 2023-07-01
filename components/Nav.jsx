@@ -27,7 +27,7 @@ import { Label } from "@/components/ui/label"
 
 
 export default function Nav({userInfo}) {
-  console.log(userInfo)
+  console.log("user info", userInfo)
 
   const router = useRouter()
   const [users, setUsers] = useState(null);  
@@ -124,12 +124,13 @@ export default function Nav({userInfo}) {
 }
  
 export const getServerSideProps = async () => {
-  const userQuery = `*[_type == "author" && email == "bibruington@gmail.com"]{
+  const userQuery = `*[_type == "author" && email == "bibruington@gmail.com"]{  
     _id,
     slug,
     image,
   }`
   const userInfo = await sanityClient.fetch(userQuery); 
+  console.log("user info", userInfo) 
 
   if (!userInfo) { 
     return {
